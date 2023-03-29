@@ -1,12 +1,9 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_mod_picking::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(DefaultPickingPlugins)
-        .add_plugin(DebugCursorPickingPlugin)
         .add_plugin(WorldInspectorPlugin::new())
         .add_startup_system(setup)
         //.add_system(click_to_move)
@@ -15,7 +12,6 @@ fn main() {
 
 #[derive(Component)]
 pub struct Player {
-    destination: Vec2,
     speed: f32,
 }
 
@@ -28,6 +24,7 @@ fn setup(
 ) {
     // note that we have to include the `Scene0` label
     let my_gltf = ass.load("mereo.gltf#Scene0");
+    let slime = ass.load("slime.gltf#Scene0");
 
     // Spawn the primary window
     commands.spawn(PrimaryWindow::default());
@@ -37,13 +34,15 @@ fn setup(
         SceneBundle {
             scene: my_gltf,
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..Default::default()
+            ..default()
         },
-        Player {
-            destination: Vec2::ZERO,
-            speed: 20.0,
-        },
+        Player { speed: 20.0 },
     ));
+    commands.spawn((SceneBundle {
+        scene: slime,
+        transform: Transform::from_xyz(0.0, 0.0, 0.0),
+        ..default()
+    },));
     // light
     commands.spawn(PointLightBundle {
         point_light: PointLight {
@@ -55,20 +54,17 @@ fn setup(
         ..default()
     });
     // plane
-    commands
-        .spawn(PbrBundle {
-            mesh: meshes.add(shape::Plane::from_size(50.0).into()),
-            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-            ..default()
-        })
-        .insert(PickableBundle::default());
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(shape::Plane::from_size(50.0).into()),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        ..default()
+    });
+
     // camera
-    commands
-        .spawn(Camera3dBundle {
-            transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..default()
-        })
-        .insert(PickingCameraBundle::default());
+    commands.spawn(Camera3dBundle {
+        transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        ..default()
+    });
 }
 
 /* TODO Move the player towards the cursor position when the right mouse button is pressed

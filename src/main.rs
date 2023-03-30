@@ -83,10 +83,10 @@ fn  move_player (
             direction += Vec3::new(0.1, 0.0, 0.0);
         }
         if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
-            direction += Vec3::new(0.0, 0.0, 0.1);
+            direction += Vec3::new(0.0, 0.0, -0.1);
         }
         if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
-            direction += Vec3::new(0.0, 0.0, -0.1);
+            direction += Vec3::new(0.0, 0.0, 0.1);
         }
 
         if direction.length() > 0.0 {

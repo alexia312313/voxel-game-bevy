@@ -1,5 +1,6 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use std::f32::consts::PI;
 
 fn main() {
     App::new()
@@ -29,12 +30,16 @@ fn setup(
     // Spawn the primary window
     commands.spawn(PrimaryWindow::default());
 
+
+    let player_spawn =  
+        Transform::from_xyz(0.0, 0.0, 0.0)
+        .with_rotation(Quat::from_rotation_y(PI/2.));
+
     // Spawn the scene
     commands.spawn((
         SceneBundle {
             scene: my_gltf,
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..default()
+            transform: player_spawn,..default()
         },
         Player { speed: 20.0 },
     ));
@@ -63,7 +68,7 @@ fn setup(
 
     // camera
     commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        transform: Transform::from_xyz(0., 2., 8.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..default()
     });
 }
@@ -77,7 +82,7 @@ fn move_player(
 ) {
     if let Ok(mut player_transform) = player_query.get_single_mut() {
         let mut direction = Vec3::ZERO;
-
+        
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
             direction += Vec3::new(-0.1, 0.0, 0.0);
         }

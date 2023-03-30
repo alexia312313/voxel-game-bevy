@@ -38,6 +38,7 @@ fn setup(
         },
         Player { speed: 20.0 },
     ));
+
     commands.spawn((SceneBundle {
         scene: slime,
         transform: Transform::from_xyz(0.0, 0.0, 0.0),
@@ -68,12 +69,13 @@ fn setup(
 }
 
 pub const PLAYER_SPEED: f32 = 5.0;
-fn  move_player (
+fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
     mut player_query: Query<&mut Transform, With<Player>>,
+    mut camera_query: Query<&mut Transform, (With<Camera3d>,Without<Player>)>,
     time: Res<Time>,
-){
-    if let Ok(mut transform) = player_query.get_single_mut() {
+) {
+    if let Ok(mut player_transform) = player_query.get_single_mut() {
         let mut direction = Vec3::ZERO;
 
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
@@ -93,6 +95,10 @@ fn  move_player (
             direction = direction.normalize();
         }
 
-        transform.translation += direction * PLAYER_SPEED * time.delta_seconds();
+        player_transform.translation += direction * PLAYER_SPEED * time.delta_seconds();
+
+        if let Ok(mut camera_transform) = camera_query.get_single_mut() {
+            camera_transform.translation += direction * PLAYER_SPEED * time.delta_seconds();
+        }
     }
 }

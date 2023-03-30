@@ -8,17 +8,11 @@
 		{
 			"name": "Scene",
 			"nodes": [
-				20
+				18
 			]
 		}
 	],
 	"nodes": [
-		{
-			"name": "bone"
-		},
-		{
-			"name": "bone2"
-		},
 		{
 			"mesh": 0,
 			"name": "depth0"
@@ -35,9 +29,7 @@
 		{
 			"children": [
 				0,
-				1,
-				2,
-				3
+				1
 			],
 			"name": "head"
 		},
@@ -61,8 +53,8 @@
 		},
 		{
 			"children": [
-				5,
-				6
+				3,
+				4
 			],
 			"name": "leftarm",
 			"translation": [
@@ -91,8 +83,8 @@
 		},
 		{
 			"children": [
-				8,
-				9
+				6,
+				7
 			],
 			"name": "leftleg",
 			"translation": [
@@ -121,8 +113,8 @@
 		},
 		{
 			"children": [
-				11,
-				12
+				9,
+				10
 			],
 			"name": "rightarm",
 			"translation": [
@@ -151,8 +143,8 @@
 		},
 		{
 			"children": [
-				14,
-				15
+				12,
+				13
 			],
 			"name": "rightleg",
 			"translation": [
@@ -181,8 +173,8 @@
 		},
 		{
 			"children": [
-				17,
-				18
+				15,
+				16
 			],
 			"name": "torso",
 			"translation": [
@@ -193,14 +185,14 @@
 		},
 		{
 			"children": [
-				4,
-				7,
-				10,
-				13,
-				16,
-				19
+				2,
+				5,
+				8,
+				11,
+				14,
+				17
 			],
-			"name": "Node_20"
+			"name": "Node_18"
 		}
 	],
 	"animations": [
@@ -209,42 +201,28 @@
 				{
 					"sampler": 0,
 					"target": {
-						"node": 4,
+						"node": 5,
 						"path": "rotation"
 					}
 				},
 				{
 					"sampler": 1,
 					"target": {
-						"node": 7,
+						"node": 8,
 						"path": "rotation"
 					}
 				},
 				{
 					"sampler": 2,
 					"target": {
-						"node": 10,
+						"node": 11,
 						"path": "rotation"
 					}
 				},
 				{
 					"sampler": 3,
 					"target": {
-						"node": 13,
-						"path": "rotation"
-					}
-				},
-				{
-					"sampler": 4,
-					"target": {
-						"node": 16,
-						"path": "rotation"
-					}
-				},
-				{
-					"sampler": 5,
-					"target": {
-						"node": 19,
+						"node": 14,
 						"path": "rotation"
 					}
 				}
@@ -253,33 +231,23 @@
 			"samplers": [
 				{
 					"input": 37,
-					"interpolation": "STEP",
+					"interpolation": "LINEAR",
 					"output": 38
 				},
 				{
-					"input": 39,
+					"input": 37,
+					"interpolation": "LINEAR",
+					"output": 39
+				},
+				{
+					"input": 37,
 					"interpolation": "LINEAR",
 					"output": 40
 				},
 				{
-					"input": 39,
+					"input": 37,
 					"interpolation": "LINEAR",
 					"output": 41
-				},
-				{
-					"input": 39,
-					"interpolation": "LINEAR",
-					"output": 42
-				},
-				{
-					"input": 39,
-					"interpolation": "LINEAR",
-					"output": 43
-				},
-				{
-					"input": 37,
-					"interpolation": "STEP",
-					"output": 44
 				}
 			]
 		}
@@ -300,7 +268,7 @@
 	],
 	"meshes": [
 		{
-			"name": "Mesh_0",
+			"name": "Mesh_1",
 			"primitives": [
 				{
 					"attributes": {
@@ -314,7 +282,7 @@
 			]
 		},
 		{
-			"name": "Mesh_1",
+			"name": "Mesh_0",
 			"primitives": [
 				{
 					"attributes": {
@@ -691,12 +659,12 @@
 			"max": [
 				-0.18125000596046448,
 				0.7562500238418579,
-				0.26875001192092896
+				0.2562499940395355
 			],
 			"min": [
 				-0.3187499940395355,
 				0.3687500059604645,
-				0.13124999403953552
+				0.11874999850988388
 			],
 			"type": "VEC3"
 		},
@@ -827,9 +795,9 @@
 		{
 			"bufferView": 37,
 			"componentType": 5126,
-			"count": 1,
+			"count": 43,
 			"max": [
-				0
+				1.75
 			],
 			"min": [
 				0
@@ -839,20 +807,14 @@
 		{
 			"bufferView": 38,
 			"componentType": 5126,
-			"count": 1,
+			"count": 43,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 39,
 			"componentType": 5126,
 			"count": 43,
-			"max": [
-				1.75
-			],
-			"min": [
-				0
-			],
-			"type": "SCALAR"
+			"type": "VEC4"
 		},
 		{
 			"bufferView": 40,
@@ -864,24 +826,6 @@
 			"bufferView": 41,
 			"componentType": 5126,
 			"count": 43,
-			"type": "VEC4"
-		},
-		{
-			"bufferView": 42,
-			"componentType": 5126,
-			"count": 43,
-			"type": "VEC4"
-		},
-		{
-			"bufferView": 43,
-			"componentType": 5126,
-			"count": 43,
-			"type": "VEC4"
-		},
-		{
-			"bufferView": 44,
-			"componentType": 5126,
-			"count": 1,
 			"type": "VEC4"
 		}
 	],
@@ -1110,43 +1054,28 @@
 		},
 		{
 			"buffer": 0,
-			"byteLength": 4,
+			"byteLength": 172,
 			"byteOffset": 9288
 		},
 		{
 			"buffer": 0,
-			"byteLength": 16,
-			"byteOffset": 9292
-		},
-		{
-			"buffer": 0,
-			"byteLength": 172,
-			"byteOffset": 9308
+			"byteLength": 688,
+			"byteOffset": 9460
 		},
 		{
 			"buffer": 0,
 			"byteLength": 688,
-			"byteOffset": 9480
+			"byteOffset": 10148
 		},
 		{
 			"buffer": 0,
 			"byteLength": 688,
-			"byteOffset": 10168
+			"byteOffset": 10836
 		},
 		{
 			"buffer": 0,
 			"byteLength": 688,
-			"byteOffset": 10856
-		},
-		{
-			"buffer": 0,
-			"byteLength": 688,
-			"byteOffset": 11544
-		},
-		{
-			"buffer": 0,
-			"byteLength": 16,
-			"byteOffset": 12232
+			"byteOffset": 11524
 		}
 	],
 	"samplers": [
@@ -1159,7 +1088,7 @@
 	],
 	"buffers": [
 		{
-			"byteLength": 12248,
+			"byteLength": 12212,
 			"uri": "mereo.bin"
 		}
 	]

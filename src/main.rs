@@ -9,6 +9,7 @@ fn main() {
         .add_startup_system(setup)
         .add_system(move_player)
         .add_system(rotate_camera)
+        .add_system(move_scene_entities)
         .run();
 }
 
@@ -56,9 +57,7 @@ fn setup(
         .spawn(SceneBundle {
             scene: ass.load("mereo.gltf#Scene0"),
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            computed_visibility: ComputedVisibility::default(),
-            global_transform: GlobalTransform::default(),
-            visibility: Visibility::default(),
+            ..default()
         })
         .with_children(|parent| {
             parent.spawn(Camera3dBundle {
@@ -72,6 +71,21 @@ fn setup(
             });
         })
         .insert(Player { speed: 3.0 });
+}
+
+fn move_scene_entities(
+    moved_scene: Query<Entity, With<Player>>,
+    children: Query<&Children>,
+    entity: Query<Entity>,
+    mut transforms: Query<&mut Transform>,
+) {
+    for moved_scene_entity in &moved_scene {
+        for entity in children.iter_descendants(moved_scene_entity) {
+            if let Ok(mut transform) = transforms.get_mut(entity) {
+                //transform.rotation = Quat::from_rotation_y(0.05) * transform.rotation;
+            }
+        }
+    }
 }
 
 fn move_player(
@@ -145,7 +159,7 @@ fn rotate_camera(
         delta += event.delta;
     }
 
-    if delta.length() > 0.0 {
+    if delta.length() > 0.0 && controller.cursor_locked {
         delta = delta * time.delta_seconds();
         for mut transform in player_query.iter_mut() {
             controller.yaw = Quat::from_rotation_y(-delta.x * 0.05);

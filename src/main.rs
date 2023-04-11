@@ -9,7 +9,7 @@ fn main() {
         .add_startup_system(setup)
         .add_system(move_player)
         .add_system(rotate_camera)
-        .add_system(move_scene_entities)
+        //.add_system(move_scene_entities)
         .run();
 }
 
@@ -17,6 +17,9 @@ fn main() {
 pub struct Player {
     speed: f32,
 }
+
+#[derive(Component)]
+struct PlayerModel;
 
 #[derive(Default, Component)]
 pub struct PlayerController {
@@ -54,11 +57,7 @@ fn setup(
     });
 
     commands
-        .spawn(SceneBundle {
-            scene: ass.load("mereo.gltf#Scene0"),
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..default()
-        })
+        .spawn(SceneBundle { ..default() })
         .with_children(|parent| {
             parent.spawn(Camera3dBundle {
                 projection: bevy::render::camera::Projection::Perspective(PerspectiveProjection {
@@ -69,25 +68,33 @@ fn setup(
                 transform: Transform::from_xyz(0.0, 2.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
                 ..default()
             });
+            parent.spawn((
+                SceneBundle {
+                    scene: ass.load("mereo.gltf#Scene0"),
+                    ..default()
+                },
+                PlayerModel,
+            ));
         })
         .insert(Player { speed: 3.0 });
 }
 
 fn move_scene_entities(
-    moved_scene: Query<Entity, With<Player>>,
+    time: Res<Time>,
+    moved_scene: Query<Entity, With<PlayerModel>>,
     children: Query<&Children>,
     mut transforms: Query<&mut Transform>,
-    camera: Query<&Camera3d>,
 ) {
-    for moved_scene_entity in moved_scene.iter() {
-        if let Ok(child_entities) = children.get(moved_scene_entity) {
-            for child_entity in child_entities.iter() {
-                if camera.get(*child_entity).is_err() {
-                    // This child_entity is NOT a Camera3d, it's just an Entity
-                    if let Ok(mut transform) = transforms.get_mut(*child_entity) {
-                        transform.rotation = Quat::from_rotation_y(0.05) * transform.rotation;
-                    }
-                }
+    for moved_scene_entity in &moved_scene {
+        let mut offset = 0.;
+        for entity in children.iter_descendants(moved_scene_entity) {
+            if let Ok(mut transform) = transforms.get_mut(entity) {
+                transform.translation = Vec3::new(
+                    offset * time.elapsed_seconds().sin() / 20.,
+                    0.,
+                    time.elapsed_seconds().cos() / 20.,
+                );
+                offset += 1.0;
             }
         }
     }

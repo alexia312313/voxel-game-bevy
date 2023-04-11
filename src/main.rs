@@ -76,13 +76,18 @@ fn setup(
 fn move_scene_entities(
     moved_scene: Query<Entity, With<Player>>,
     children: Query<&Children>,
-    entity: Query<Entity>,
     mut transforms: Query<&mut Transform>,
+    camera: Query<&Camera3d>,
 ) {
-    for moved_scene_entity in &moved_scene {
-        for entity in children.iter_descendants(moved_scene_entity) {
-            if let Ok(mut transform) = transforms.get_mut(entity) {
-                //transform.rotation = Quat::from_rotation_y(0.05) * transform.rotation;
+    for moved_scene_entity in moved_scene.iter() {
+        if let Ok(child_entities) = children.get(moved_scene_entity) {
+            for child_entity in child_entities.iter() {
+                if camera.get(*child_entity).is_err() {
+                    // This child_entity is NOT a Camera3d, it's just an Entity
+                    if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                        transform.rotation = Quat::from_rotation_y(0.05) * transform.rotation;
+                    }
+                }
             }
         }
     }

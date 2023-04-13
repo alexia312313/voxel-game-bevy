@@ -14,6 +14,7 @@ fn main() {
         .add_system(rotate_camera)
         .add_system(setup_scene_once_loaded)
         //.add_system(move_scene_entities)
+        //.add_system(rotate_model)
         .run();
 }
 
@@ -145,6 +146,12 @@ fn move_scene_entities(
     }
 }
 
+fn rotate_model(time: Res<Time>, mut player_query: Query<(&mut Transform, &PlayerModel)>) {
+    for (mut transform, player) in player_query.iter_mut() {
+        transform.rotation *= Quat::from_rotation_y(time.elapsed_seconds() / 2.);
+    }
+}
+
 fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut Transform, &Player)>,
@@ -152,6 +159,7 @@ fn move_player(
 ) {
     for (mut transform, player) in player_query.iter_mut() {
         let mut direction = Vec3::ZERO;
+        let mut jump = Vec3::ZERO;
         let tr = transform.right();
         let tf = transform.forward();
 
@@ -168,10 +176,7 @@ fn move_player(
             direction -= Vec3::new(tf.x, 0.0, tf.z);
         }
         if keyboard_input.pressed(KeyCode::Space) {
-            direction += Vec3::new(0.0, 0.1, 0.0);
-        }
-        if keyboard_input.pressed(KeyCode::LShift) {
-            direction -= Vec3::new(0.0, 0.1, 0.0);
+            jump += Vec3::new(0.0, 1.0, 0.0);
         }
 
         if direction.length() > 0.0 {
@@ -179,6 +184,7 @@ fn move_player(
         }
 
         transform.translation += direction * player.speed * time.delta_seconds();
+        transform.translation += jump * player.speed * time.delta_seconds();
     }
 }
 

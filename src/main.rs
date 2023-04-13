@@ -11,7 +11,7 @@ fn main() {
         .add_plugin(WorldInspectorPlugin::new())
         .add_startup_system(setup)
         .add_system(move_player)
-        .add_system(rotate_camera)
+        //.add_system(rotate_camera)
         .add_system(setup_scene_once_loaded)
         //.add_system(move_scene_entities)
         //.add_system(rotate_model)
@@ -126,21 +126,20 @@ fn setup_scene_once_loaded(
 }
 
 fn move_scene_entities(
-    time: Res<Time>,
-    moved_scene: Query<Entity, With<PlayerModel>>,
+    moved_scene: Query<Entity, With<Player>>,
     children: Query<&Children>,
     mut transforms: Query<&mut Transform>,
+    camera: Query<&Camera3d>,
 ) {
-    for moved_scene_entity in &moved_scene {
-        let mut offset = 0.;
-        for entity in children.iter_descendants(moved_scene_entity) {
-            if let Ok(mut transform) = transforms.get_mut(entity) {
-                transform.translation = Vec3::new(
-                    offset * time.elapsed_seconds().sin() / 20.,
-                    0.,
-                    time.elapsed_seconds().cos() / 20.,
-                );
-                offset += 1.0;
+    for moved_scene_entity in moved_scene.iter() {
+        if let Ok(child_entities) = children.get(moved_scene_entity) {
+            for child_entity in child_entities.iter() {
+                if camera.get(*child_entity).is_err() {
+                    // This child_entity is NOT a Camera3d, it's just an Entity
+                    if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                        transform.rotation = Quat::from_rotation_y(0.05) * transform.rotation;
+                    }
+                }
             }
         }
     }
@@ -154,37 +153,49 @@ fn rotate_model(time: Res<Time>, mut player_query: Query<(&mut Transform, &Playe
 
 fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
-    mut player_query: Query<(&mut Transform, &Player)>,
+    player_query: Query<Entity, With<Player>>,
+    children: Query<&Children>,
+    mut transforms: Query<&mut Transform>,
+    camera: Query<&Camera3d>,
     time: Res<Time>,
 ) {
-    for (mut transform, player) in player_query.iter_mut() {
-        let mut direction = Vec3::ZERO;
-        let mut jump = Vec3::ZERO;
-        let tr = transform.right();
-        let tf = transform.forward();
+    for player in player_query.iter() {
+        if let Ok(child_entities) = children.get(player) {
+            for child_entity in child_entities.iter() {
+                if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                    let mut direction = Vec3::ZERO;
+                    let mut jump = Vec3::ZERO;
 
-        if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
-            direction -= Vec3::new(tr.x, 0.0, tr.z);
-        }
-        if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
-            direction += Vec3::new(tr.x, 0.0, tr.z);
-        }
-        if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
-            direction += Vec3::new(tf.x, 0.0, tf.z);
-        }
-        if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
-            direction -= Vec3::new(tf.x, 0.0, tf.z);
-        }
-        if keyboard_input.pressed(KeyCode::Space) {
-            jump += Vec3::new(0.0, 1.0, 0.0);
-        }
+                    if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
+                        direction -= Vec3::new(0.1, 0.0, 0.0);
+                    }
+                    if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D)
+                    {
+                        direction += Vec3::new(0.1, 0.0, 0.0);
+                    }
+                    if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
+                        direction += Vec3::new(0.0, 0.0, 0.1);
+                    }
+                    if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
+                        direction -= Vec3::new(0.0, 0.0, 0.1);
+                    }
+                    if keyboard_input.pressed(KeyCode::Space) {
+                        jump += Vec3::new(0.0, 1.0, 0.0);
+                    }
 
-        if direction.length() > 0.0 {
-            direction = direction.normalize();
-        }
+                    if direction.length() > 0.0 {
+                        direction = direction.normalize();
+                    }
 
-        transform.translation += direction * player.speed * time.delta_seconds();
-        transform.translation += jump * player.speed * time.delta_seconds();
+                    transform.translation += direction * 3.0 * time.delta_seconds();
+                    transform.translation += jump * 3.0 * time.delta_seconds();
+
+                    if camera.get(*child_entity).is_err() {
+                        transform.rotate_y(direction.x)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -192,7 +203,7 @@ fn rotate_camera(
     keyboard_input: Res<Input<KeyCode>>,
     mut controller_query: Query<&mut PlayerController>,
     mut mouse_events: EventReader<MouseMotion>,
-    mut player_query: Query<&mut Transform, With<Player>>,
+    mut player_query: Query<&mut Transform, With<Camera3d>>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
     time: Res<Time>,
 ) {

@@ -1,14 +1,18 @@
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_plugin(RapierDebugRenderPlugin::default())
         .add_plugin(WorldInspectorPlugin::new())
         .add_startup_system(setup)
         .add_system(move_player)
         .add_system(rotate_camera)
+        .add_system(setup_scene_once_loaded)
         //.add_system(move_scene_entities)
         .run();
 }
@@ -20,6 +24,9 @@ pub struct Player {
 
 #[derive(Component)]
 struct PlayerModel;
+
+#[derive(Resource)]
+struct Animations(Vec<Handle<AnimationClip>>);
 
 #[derive(Default, Component)]
 pub struct PlayerController {
@@ -34,6 +41,8 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    commands.insert_resource(Animations(vec![ass.load("mereo.gltf#walk")]));
+
     commands.spawn(PrimaryWindow::default());
     commands.spawn(SceneBundle {
         scene: ass.load("slime.gltf#Scene0"),
@@ -42,22 +51,37 @@ fn setup(
     });
     commands.spawn(PointLightBundle {
         point_light: PointLight {
-            intensity: 1500.0,
+            intensity: 9999.0,
             shadows_enabled: true,
             ..default()
         },
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
         ..default()
     });
-    commands.spawn(PlayerController::default());
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(shape::Plane::from_size(50.0).into()),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+    commands.spawn(PointLightBundle {
+        point_light: PointLight {
+            intensity: 9999.0,
+            shadows_enabled: false,
+            ..default()
+        },
+        transform: Transform::from_xyz(-4.0, 8.0, -4.0),
         ..default()
     });
+    commands.spawn(PlayerController::default());
+
+    commands
+        .spawn(PbrBundle {
+            mesh: meshes.add(shape::Plane::from_size(50.0).into()),
+            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+            ..default()
+        })
+        .insert(Collider::cuboid(50.0, 0.1, 50.0));
 
     commands
         .spawn(SceneBundle { ..default() })
+        .insert(RigidBody::Dynamic)
+        .insert(GravityScale(1.0))
+        .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .with_children(|parent| {
             parent.spawn(Camera3dBundle {
                 projection: bevy::render::camera::Projection::Perspective(PerspectiveProjection {
@@ -76,7 +100,28 @@ fn setup(
                 PlayerModel,
             ));
         })
+        .with_children(|children| {
+            children
+                .spawn(Collider::cuboid(0.2, 0.5, 0.2))
+                .insert(TransformBundle {
+                    local: Transform::from_xyz(0.0, 0.6, 0.0),
+                    global: Default::default(),
+                });
+        })
         .insert(Player { speed: 3.0 });
+}
+
+fn setup_scene_once_loaded(
+    animations: Res<Animations>,
+    mut player: Query<&mut AnimationPlayer>,
+    mut done: Local<bool>,
+) {
+    if !*done {
+        if let Ok(mut player) = player.get_single_mut() {
+            player.play(animations.0[0].clone_weak()).repeat();
+            *done = true;
+        }
+    }
 }
 
 fn move_scene_entities(

@@ -41,7 +41,7 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    commands.insert_resource(Animations(vec![ass.load("mereo.gltf#walk")]));
+    commands.insert_resource(Animations(vec![ass.load("mereo.gltf#Animation0")]));
 
     commands.spawn(PrimaryWindow::default());
     commands.spawn(SceneBundle {

@@ -6,21 +6,23 @@ use super::{
     world::plugin::WorldPlugin,
 };
 
-pub struct GamePlugin;
-
 use crate::AppState;
 use crate::GameOver;
 
+pub struct GamePlugin;
+
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugin(WorldPlugin)
-            .add_plugin(UiPlugin)
+        app
             // Events
             .add_event::<GameOver>()
             // States
             .add_state::<SimulationState>()
             // OnEnter Systems
             .add_system(pause_simulation.in_schedule(OnEnter(AppState::Game)))
+            // My Plugins
+            .add_plugin(WorldPlugin)
+            .add_plugin(UiPlugin)
             .add_plugin(MobPlugin)
             .add_plugin(PlayerPlugin)
             // Systems

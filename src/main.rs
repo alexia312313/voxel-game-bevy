@@ -12,7 +12,7 @@ fn main() {
         .add_startup_system(setup)
         .add_system(move_player)
         //.add_system(rotate_camera)
-        .add_system(setup_scene_once_loaded)
+        //.add_system(setup_scene_once_loaded)
         //.add_system(move_scene_entities)
         //.add_system(rotate_model)
         .run();
@@ -156,42 +156,66 @@ fn move_player(
     player_query: Query<Entity, With<Player>>,
     children: Query<&Children>,
     mut transforms: Query<&mut Transform>,
-    camera: Query<&Camera3d>,
+    model: Query<&PlayerModel>,
+    animations: Res<Animations>,
+    mut animation_player: Query<&mut AnimationPlayer>,
     time: Res<Time>,
+    mut done: Local<bool>,
 ) {
-    for player in player_query.iter() {
-        if let Ok(child_entities) = children.get(player) {
-            for child_entity in child_entities.iter() {
-                if let Ok(mut transform) = transforms.get_mut(*child_entity) {
-                    let mut direction = Vec3::ZERO;
-                    let mut jump = Vec3::ZERO;
+    if let Ok(mut player_animation) = animation_player.get_single_mut() {
+        for player in player_query.iter() {
+            if let Ok(mut transform) = transforms.get_mut(player) {
+                let mut jump = Vec3::ZERO;
+                let mut direction = Vec3::ZERO;
 
-                    if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
-                        direction -= Vec3::new(0.1, 0.0, 0.0);
-                    }
-                    if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D)
-                    {
-                        direction += Vec3::new(0.1, 0.0, 0.0);
-                    }
-                    if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
-                        direction += Vec3::new(0.0, 0.0, 0.1);
-                    }
-                    if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
-                        direction -= Vec3::new(0.0, 0.0, 0.1);
-                    }
-                    if keyboard_input.pressed(KeyCode::Space) {
-                        jump += Vec3::new(0.0, 1.0, 0.0);
-                    }
+                if keyboard_input.pressed(KeyCode::A) {
+                    direction -= Vec3::new(0.1, 0.0, 0.0);
+                }
+                if keyboard_input.pressed(KeyCode::D) {
+                    direction += Vec3::new(0.1, 0.0, 0.0);
+                }
+                if keyboard_input.pressed(KeyCode::W) {
+                    direction -= Vec3::new(0.0, 0.0, 0.1);
+                }
+                if keyboard_input.pressed(KeyCode::S) {
+                    direction += Vec3::new(0.0, 0.0, 0.1);
+                }
+                if keyboard_input.pressed(KeyCode::Space) {
+                    jump += Vec3::new(0.0, 2.0, 0.0);
+                }
 
-                    if direction.length() > 0.0 {
-                        direction = direction.normalize();
+                if direction.length() > 0.0 {
+                    direction = direction.normalize();
+                    if !*done {
+                        player_animation.play(animations.0[0].clone_weak()).repeat();
+                        *done = true;
                     }
+                } else {
+                    player_animation.stop_repeating();
+                    *done = false;
+                }
 
-                    transform.translation += direction * 3.0 * time.delta_seconds();
-                    transform.translation += jump * 3.0 * time.delta_seconds();
+                transform.translation += direction * 3.0 * time.delta_seconds();
+                transform.translation += jump * 3.0 * time.delta_seconds();
+            }
 
-                    if camera.get(*child_entity).is_err() {
-                        transform.rotate_y(direction.x)
+            if let Ok(child_entities) = children.get(player) {
+                for child_entity in child_entities.iter() {
+                    if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                        if model.get(*child_entity).is_ok() {
+                            if keyboard_input.pressed(KeyCode::A) {
+                                transform.rotation = Quat::from_rotation_y(PI);
+                            }
+                            if keyboard_input.pressed(KeyCode::D) {
+                                transform.rotation = Quat::from_rotation_y(0.0);
+                            }
+                            if keyboard_input.pressed(KeyCode::W) {
+                                transform.rotation = Quat::from_rotation_y(PI / 2.0);
+                            }
+                            if keyboard_input.pressed(KeyCode::S) {
+                                transform.rotation = Quat::from_rotation_y(-PI / 2.0);
+                            }
+                        }
                     }
                 }
             }

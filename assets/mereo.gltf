@@ -268,7 +268,7 @@
 	],
 	"meshes": [
 		{
-			"name": "Mesh_1",
+			"name": "Mesh_0",
 			"primitives": [
 				{
 					"attributes": {
@@ -282,7 +282,7 @@
 			]
 		},
 		{
-			"name": "Mesh_0",
+			"name": "Mesh_1",
 			"primitives": [
 				{
 					"attributes": {
@@ -795,9 +795,9 @@
 		{
 			"bufferView": 37,
 			"componentType": 5126,
-			"count": 43,
+			"count": 25,
 			"max": [
-				1.75
+				1
 			],
 			"min": [
 				0
@@ -807,25 +807,25 @@
 		{
 			"bufferView": 38,
 			"componentType": 5126,
-			"count": 43,
+			"count": 25,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 39,
 			"componentType": 5126,
-			"count": 43,
+			"count": 25,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 40,
 			"componentType": 5126,
-			"count": 43,
+			"count": 25,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 41,
 			"componentType": 5126,
-			"count": 43,
+			"count": 25,
 			"type": "VEC4"
 		}
 	],
@@ -1054,28 +1054,28 @@
 		},
 		{
 			"buffer": 0,
-			"byteLength": 172,
+			"byteLength": 100,
 			"byteOffset": 9288
 		},
 		{
 			"buffer": 0,
-			"byteLength": 688,
-			"byteOffset": 9460
+			"byteLength": 400,
+			"byteOffset": 9388
 		},
 		{
 			"buffer": 0,
-			"byteLength": 688,
-			"byteOffset": 10148
+			"byteLength": 400,
+			"byteOffset": 9788
 		},
 		{
 			"buffer": 0,
-			"byteLength": 688,
-			"byteOffset": 10836
+			"byteLength": 400,
+			"byteOffset": 10188
 		},
 		{
 			"buffer": 0,
-			"byteLength": 688,
-			"byteOffset": 11524
+			"byteLength": 400,
+			"byteOffset": 10588
 		}
 	],
 	"samplers": [
@@ -1088,7 +1088,7 @@
 	],
 	"buffers": [
 		{
-			"byteLength": 12212,
+			"byteLength": 10988,
 			"uri": "mereo.bin"
 		}
 	]

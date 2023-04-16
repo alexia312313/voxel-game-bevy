@@ -21,7 +21,11 @@ pub struct PlayerController {
 }
 
 pub fn setup(mut commands: Commands, ass: Res<AssetServer>) {
-    commands.insert_resource(Animations(vec![ass.load("mereo.gltf#Animation0")]));
+    commands.insert_resource(Animations(vec![
+        ass.load("mereo.gltf#Animation0"),
+        ass.load("mereo.gltf#Animation1"),
+    ]));
+
     commands.spawn(PlayerController::default());
     commands
         .spawn(SceneBundle { ..default() })
@@ -59,6 +63,7 @@ pub fn setup(mut commands: Commands, ass: Res<AssetServer>) {
 
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
+    mouse_input: Res<Input<MouseButton>>,
     player_query: Query<Entity, With<Player>>,
     children: Query<&Children>,
     mut transforms: Query<&mut Transform>,
@@ -86,6 +91,9 @@ pub fn move_player(
                 if keyboard_input.pressed(KeyCode::S) {
                     direction += Vec3::new(0.0, 0.0, 0.1);
                 }
+                if mouse_input.pressed(MouseButton::Left) {
+                    player_animation.play(animations.0[0].clone_weak());
+                }
                 if keyboard_input.pressed(KeyCode::Space) {
                     jump += Vec3::new(0.0, 2.0, 0.0);
                 }
@@ -93,7 +101,7 @@ pub fn move_player(
                 if direction.length() > 0.0 {
                     direction = direction.normalize();
                     if !*done {
-                        player_animation.play(animations.0[0].clone_weak()).repeat();
+                        player_animation.play(animations.0[1].clone_weak()).repeat();
                         *done = true;
                     }
                 } else {

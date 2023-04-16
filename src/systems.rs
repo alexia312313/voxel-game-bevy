@@ -53,6 +53,4 @@ pub fn exit_game(
 
 pub fn window_start(mut commands: Commands) {
     commands.spawn(PrimaryWindow::default());
-    // TODO - Add a camera to the main menu and despawn it when the game starts
-    commands.spawn(Camera3dBundle::default());
 }

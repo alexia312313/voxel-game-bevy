@@ -1,15 +1,37 @@
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 
 use crate::main_menu::components::*;
 use crate::main_menu::styles::*;
 
-pub fn spawn_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn spawn_main_menu(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
     build_main_menu(&mut commands, &asset_server);
+
+    let window = window_query.get_single().unwrap();
+
+    commands.spawn((
+        Camera2dBundle {
+            transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
+            ..default()
+        },
+        CameraMenu {},
+    ));
 }
 
-pub fn despawn_main_menu(mut commands: Commands, main_menu_query: Query<Entity, With<MainMenu>>) {
+pub fn despawn_main_menu(
+    mut commands: Commands,
+    main_menu_query: Query<Entity, With<MainMenu>>,
+    camera_query: Query<Entity, With<CameraMenu>>,
+) {
     if let Ok(main_menu_entity) = main_menu_query.get_single() {
         commands.entity(main_menu_entity).despawn_recursive();
+    }
+    if let Ok(camera_entity) = camera_query.get_single() {
+        commands.entity(camera_entity).despawn();
     }
 }
 

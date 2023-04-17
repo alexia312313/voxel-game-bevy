@@ -245,7 +245,7 @@
 			"samplers": [
 				{
 					"input": 37,
-					"interpolation": "STEP",
+					"interpolation": "LINEAR",
 					"output": 38
 				},
 				{

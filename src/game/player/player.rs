@@ -42,13 +42,21 @@ pub fn setup(mut commands: Commands, ass: Res<AssetServer>) {
                 transform: Transform::from_xyz(0.0, 2.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
                 ..default()
             });
-            parent.spawn((
-                SceneBundle {
-                    scene: ass.load("mereo.gltf#Scene0"),
-                    ..default()
-                },
-                PlayerModel,
-            ));
+            parent
+                .spawn((
+                    SceneBundle {
+                        scene: ass.load("mereo.gltf#Scene0"),
+                        ..default()
+                    },
+                    PlayerModel,
+                ))
+                .with_children(|parent| {
+                    parent.spawn(SceneBundle {
+                        scene: ass.load("purple-sword.gltf#Scene0"),
+                        transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                        ..default()
+                    });
+                });
         })
         .with_children(|children| {
             children
@@ -91,9 +99,13 @@ pub fn move_player(
                 if keyboard_input.pressed(KeyCode::S) {
                     direction += Vec3::new(0.0, 0.0, 0.1);
                 }
+                /* TODO: Fix this
                 if mouse_input.pressed(MouseButton::Left) {
-                    player_animation.play(animations.0[0].clone_weak());
+                    player_animation
+                        .play(animations.0[0].clone_weak())
+                        .set_speed(5.0);
                 }
+                */
                 if keyboard_input.pressed(KeyCode::Space) {
                     jump += Vec3::new(0.0, 2.0, 0.0);
                 }
@@ -105,6 +117,7 @@ pub fn move_player(
                         *done = true;
                     }
                 } else {
+                    // Todo: Transition to idle animation
                     player_animation.stop_repeating();
                     *done = false;
                 }

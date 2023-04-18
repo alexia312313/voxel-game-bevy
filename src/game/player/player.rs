@@ -79,7 +79,8 @@ pub fn move_player(
     animations: Res<Animations>,
     mut animation_player: Query<&mut AnimationPlayer>,
     time: Res<Time>,
-    mut done: Local<bool>,
+    mut done: Local<bool>
+    
 ) {
     if let Ok(mut player_animation) = animation_player.get_single_mut() {
         for player in player_query.iter() {
@@ -118,6 +119,8 @@ pub fn move_player(
                     }
                 } else {
                     // Todo: Transition to idle animation
+                    player_animation.set_elapsed(0.0);
+
                     player_animation.stop_repeating();
                     *done = false;
                 }

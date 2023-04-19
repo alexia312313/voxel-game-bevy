@@ -80,53 +80,65 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                         image: asset_server.load("campfire.png").into(),
                         ..Default::default()
                     });
-                    // === Play Button ===
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: BUTTON_STYLE,
-                                background_color: NORMAL_BUTTON_COLOR.into(),
-                                ..default()
-                            },
-                            PlayButton {},
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(TextBundle {
-                                text: Text {
-                                    sections: vec![TextSection::new(
-                                        "Play",
-                                        get_button_text_style(&asset_server),
-                                    )],
-                                    alignment: TextAlignment::Center,
-                                    ..default()
-                                },
-                                ..default()
-                            });
-                        });
 
-                    // === Quit Button ===
+                    parent.spawn(NodeBundle{
+                        style: TEXT_MENU ,
+                        ..Default::default()
+                    }).with_children(|parent|{
+
+                        // === Play Button ===
                     parent
-                        .spawn((
-                            ButtonBundle {
-                                style: BUTTON_STYLE,
-                                background_color: NORMAL_BUTTON_COLOR.into(),
+                    .spawn((
+                        ButtonBundle {
+                            style: BUTTON_STYLE,
+                            background_color: NORMAL_BUTTON_COLOR.into(),
+                            ..default()
+                        },
+                        PlayButton {},
+                    ))
+                    .with_children(|parent| {
+                        parent.spawn(TextBundle {
+                            text: Text {
+                                sections: vec![TextSection::new(
+                                    "Play",
+                                    get_button_text_style(&asset_server),
+                                )],
+                                alignment: TextAlignment::Center,
                                 ..default()
                             },
-                            QuitButton {},
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(TextBundle {
-                                text: Text {
-                                    sections: vec![TextSection::new(
-                                        "Quit",
-                                        get_button_text_style(&asset_server),
-                                    )],
-                                    alignment: TextAlignment::Center,
-                                    ..default()
-                                },
-                                ..default()
-                            });
+                            ..default()
                         });
+                    });
+
+                // === Quit Button ===
+                parent
+                    .spawn((
+                        ButtonBundle {
+                            style: BUTTON_STYLE,
+                            background_color: NORMAL_BUTTON_COLOR.into(),
+                            ..default()
+                        },
+                        QuitButton {},
+                    ))
+                    .with_children(|parent| {
+                        parent.spawn(TextBundle {
+                            text: Text {
+                                sections: vec![TextSection::new(
+                                    "Quit",
+                                    get_button_text_style(&asset_server),
+                                )],
+                                alignment: TextAlignment::Center,
+                                ..default()
+                            },
+                            ..default()
+                        });
+                    });
+
+                    });
+
+
+
+                    
                 });
         })
         .id();

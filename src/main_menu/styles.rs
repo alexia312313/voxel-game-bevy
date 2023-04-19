@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_inspector_egui::egui::style;
+use crate::JustifyContent::*;
 
 pub const NORMAL_BUTTON_COLOR: Color = Color::rgb(0.15, 0.15, 0.15);
 pub const HOVERED_BUTTON_COLOR: Color = Color::rgb(0.25, 0.25, 0.25);
@@ -26,7 +27,7 @@ pub const TITLE_STYLE: Style = Style {
     justify_content: JustifyContent::Center,
     align_items: AlignItems::Center,
     size: Size::new(Val::Px(300.0), Val::Px(120.0)),
-    margin: UiRect::new(Val::Px(8.0), Val::Px(8.0), Val::Px(8.0), Val::Px(8.0)),
+    margin: UiRect::new(Val::Px(8.0), Val::Px(8.0), Val::Px(50.0), Val::Px(8.0)),
 
     ..Style::DEFAULT
 };
@@ -48,12 +49,20 @@ pub fn get_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
 }
 
 pub const IMAGE_STYLE: Style = Style {
-    size: Size::new(Val::Px(480.0), Val::Px(270.0)),
-    margin: UiRect::new(Val::Px(8.0), Val::Px(8.0), Val::Px(8.0), Val::Px(8.0)),
+    size: Size::new(Val::Px(960.0), Val::Px(540.0)),
+    margin: UiRect::new(Val::Px(0.0), Val::Px(0.0), Val::Px(0.0), Val::Px(0.0)),
     ..Style::DEFAULT
 };
 
 pub const BOTTOM_HOLDER: Style = Style{
     flex_direction: FlexDirection::Row,
+
+    
+    ..Style::DEFAULT
+}; 
+
+
+pub const TEXT_MENU: Style = Style{
+    flex_direction: FlexDirection::Column,
     ..Style::DEFAULT
 }; 

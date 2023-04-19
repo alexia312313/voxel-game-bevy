@@ -25,48 +25,48 @@ pub fn move_player(
         if let Ok(mut player_animation) = animation_players.get_mut(animation_entity.0) {
             for player in player_query.iter() {
                 if let Ok(mut transform) = transforms.get_mut(player) {
-                    let mut jump = Vec3::ZERO;
-                    let mut direction = Vec3::ZERO;
-
-                    if keyboard_input.pressed(KeyCode::A) {
-                        direction -= Vec3::new(0.1, 0.0, 0.0);
-                    }
-                    if keyboard_input.pressed(KeyCode::D) {
-                        direction += Vec3::new(0.1, 0.0, 0.0);
-                    }
-                    if keyboard_input.pressed(KeyCode::W) {
-                        direction -= Vec3::new(0.0, 0.0, 0.1);
-                    }
-                    if keyboard_input.pressed(KeyCode::S) {
-                        direction += Vec3::new(0.0, 0.0, 0.1);
-                    }
-                    /* TODO: Fix this
                     if mouse_input.pressed(MouseButton::Left) {
-                        player_animation
-                            .play(animations.0[0].clone_weak())
-                            .set_speed(5.0);
-                    }
-                    */
-                    if keyboard_input.pressed(KeyCode::Space) {
-                        jump += Vec3::new(0.0, 2.0, 0.0);
-                    }
-
-                    if direction.length() > 0.0 {
-                        direction = direction.normalize();
-                        if !*done {
-                            player_animation.play(animations.0[1].clone_weak()).repeat();
-                            *done = true;
-                        }
+                        player_animation.play(animations.0[0].clone_weak());
                     } else {
-                        // Todo: Transition to idle animation
-                        player_animation.set_elapsed(0.0);
+                        let mut jump = Vec3::ZERO;
+                        let mut direction = Vec3::ZERO;
 
-                        player_animation.stop_repeating();
-                        *done = false;
+                        if keyboard_input.pressed(KeyCode::A) {
+                            direction -= Vec3::new(0.1, 0.0, 0.0);
+                        }
+                        if keyboard_input.pressed(KeyCode::D) {
+                            direction += Vec3::new(0.1, 0.0, 0.0);
+                        }
+                        if keyboard_input.pressed(KeyCode::W) {
+                            direction -= Vec3::new(0.0, 0.0, 0.1);
+                        }
+                        if keyboard_input.pressed(KeyCode::S) {
+                            direction += Vec3::new(0.0, 0.0, 0.1);
+                        }
+
+                        if keyboard_input.pressed(KeyCode::Space) {
+                            jump += Vec3::new(0.0, 2.0, 0.0);
+                        }
+
+                        if direction.length() > 0.0 {
+                            direction = direction.normalize();
+                            if !*done {
+                                player_animation.play(animations.0[1].clone_weak()).repeat();
+
+                                *done = true;
+                            }
+                        } else {
+                            player_animation
+                                .play(animations.0[2].clone_weak())
+                                .set_speed(0.1)
+                                .repeat();
+
+                            *done = false;
+                        }
+
+                        transform.translation += direction * 3.0 * time.delta_seconds();
+                        transform.translation += jump * 3.0 * time.delta_seconds();
                     }
-
-                    transform.translation += direction * 3.0 * time.delta_seconds();
-                    transform.translation += jump * 3.0 * time.delta_seconds();
                 }
 
                 if let Ok(child_entities) = children.get(player) {
@@ -178,6 +178,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
     commands.insert_resource(Animations(vec![
         _my_assets.player_animation_hit.clone_weak(),
         _my_assets.player_animation_walking.clone_weak(),
+        _my_assets.player_animation_idle.clone_weak(),
     ]));
 
     commands.spawn(PlayerController::default());

@@ -57,6 +57,8 @@ pub struct MyAssets {
     sword: Handle<Scene>,
     #[asset(path = "mereo.gltf#Animation0")]
     player_animation_hit: Handle<AnimationClip>,
-    #[asset(path = "mereo.gltf#Animation1")]
+    #[asset(path = "mereo.gltf#Animation2")]
     player_animation_walking: Handle<AnimationClip>,
+    #[asset(path = "mereo.gltf#Animation1")]
+    player_animation_idle: Handle<AnimationClip>,
 }

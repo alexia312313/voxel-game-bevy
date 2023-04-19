@@ -1,8 +1,12 @@
 use std::thread::spawn;
+use bevy_rapier3d::na::Translation;
 use big_brain::prelude::*;
 use bevy::utils::tracing::{debug, trace};
-use bevy::prelude::*;
+use bevy::{prelude::*, transform};
 use bevy_rapier3d::prelude::*;
+
+use crate::game::player::player::Player;
+
 
 
 #[derive(Component, Debug)]
@@ -39,9 +43,10 @@ pub fn aggro_action_system(
     // We execute actions by querying for their associated Action Component
     // (Drink in this case). You'll always need both Actor and ActionState.
     mut query: Query<(&Actor, &mut ActionState, &Attack, &ActionSpan)>,
-) {
+     transform: Query<& Transform, With<Player>>,
+    ) {
     for (Actor(actor), mut state, attack, span) in &mut query {
-        // This sets up the tracing scope. Any `debug` calls here will be
+          // This sets up the tracing scope. Any `debug` calls here will be
         // spanned together in the output.
         let _guard = span.span().enter();
 
@@ -54,8 +59,13 @@ pub fn aggro_action_system(
                 }
                 ActionState::Executing => {
                     trace!("Attacking...");
-                    aggro.aggro -=
-                        attack.per_second * (time.delta().as_micros() as f32 / 1_000_000.0);
+                    
+                    if let Ok(translate) = transform.get_single(){
+                        let player_pos = translate.translation;
+                        print!("{:?}" , player_pos);
+                    } 
+                    /*aggro.aggro -=
+                        attack.per_second * (time.delta().as_micros() as f32 / 1_000_000.0);*/
                     if aggro.aggro <= attack.until {
                         // To "finish" an action, we set its state to Success or
                         // Failure.

@@ -1,6 +1,5 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 
 use crate::AppState;
 
@@ -37,8 +36,4 @@ pub fn exit_game(
     if keyboard_input.just_pressed(KeyCode::Escape) {
         app_exit_event_writer.send(AppExit);
     }
-}
-
-pub fn window_start(mut commands: Commands) {
-    commands.spawn(PrimaryWindow::default());
 }

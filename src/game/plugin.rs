@@ -1,12 +1,9 @@
 use bevy::prelude::*;
 
-use super::systems::*;
 use super::{
     mob::plugin::MobPlugin, player::plugin::PlayerPlugin, ui::plugin::UiPlugin,
     world::plugin::WorldPlugin,
 };
-
-use crate::AppState;
 
 pub struct GamePlugin;
 

@@ -28,8 +28,6 @@ fn main() {
         // My Plugins
         .add_plugin(MainMenuPlugin)
         .add_plugin(GamePlugin)
-        // Startup Systems
-        .add_startup_system(window_start)
         // Systems
         .add_system(transition_to_game_state)
         .add_system(transition_to_main_menu_state)

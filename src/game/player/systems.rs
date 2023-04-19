@@ -1,7 +1,6 @@
 use super::components::*;
 
 use super::resources::*;
-use crate::AppState;
 use crate::MyAssets;
 use bevy::asset::LoadState;
 use bevy::render::camera::Projection::Perspective;
@@ -175,7 +174,7 @@ fn get_top_parent(mut curr_entity: Entity, parent_query: &Query<&Parent>) -> Ent
     curr_entity
 }
 
-pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>, time: Res<Time>) {
+pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
     commands.insert_resource(Animations(vec![
         _my_assets.player_animation_hit.clone_weak(),
         _my_assets.player_animation_walking.clone_weak(),

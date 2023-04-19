@@ -1,9 +1,10 @@
 use super::components::*;
 
 use super::resources::*;
-use crate::game::plugin::SimulationState;
 use crate::AppState;
+use crate::MyAssets;
 use bevy::asset::LoadState;
+use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
@@ -147,20 +148,14 @@ pub fn link_animations(
     animations_entity_link_query: Query<&AnimationEntityLink>,
     mut commands: Commands,
 ) {
-    print!("Anem a entrar");
     // Get all the Animation players which can be deep and hidden in the heirachy
     for entity in player_query.iter() {
-        print!("He entrat dintre");
         let top_entity = get_top_parent(entity, &parent_query);
 
         // If the top parent has an animation config ref then link the player to the config
         if animations_entity_link_query.get(top_entity).is_ok() {
-            print!("No he entrat");
             warn!("Problem with multiple animationsplayers for the same top parent");
         } else {
-            print!("He entrat");
-
-            print!("added entity!");
             commands
                 .entity(top_entity)
                 .insert(AnimationEntityLink(entity.clone()));
@@ -180,16 +175,10 @@ fn get_top_parent(mut curr_entity: Entity, parent_query: &Query<&Parent>) -> Ent
     curr_entity
 }
 
-pub fn setup(
-    mut commands: Commands,
-    ass: Res<AssetServer>,
-    time: Res<Time>,
-    mut simulation_state_next_state: ResMut<NextState<SimulationState>>,
-    mut load_state: ResMut<LoadState>,
-) {
+pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>, time: Res<Time>) {
     commands.insert_resource(Animations(vec![
-        ass.load("mereo.gltf#Animation0"),
-        ass.load("mereo.gltf#Animation1"),
+        _my_assets.player_animation_hit.clone_weak(),
+        _my_assets.player_animation_walking.clone_weak(),
     ]));
 
     commands.spawn(PlayerController::default());
@@ -200,7 +189,7 @@ pub fn setup(
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .with_children(|parent| {
             parent.spawn(Camera3dBundle {
-                projection: bevy::render::camera::Projection::Perspective(PerspectiveProjection {
+                projection: Perspective(PerspectiveProjection {
                     fov: PI / 2.,
                     far: 2048.0,
                     ..default()
@@ -211,14 +200,14 @@ pub fn setup(
             parent
                 .spawn((
                     SceneBundle {
-                        scene: ass.load("mereo.gltf#Scene0"),
+                        scene: _my_assets.player.clone_weak(),
                         ..default()
                     },
                     PlayerModel,
                 ))
                 .with_children(|parent| {
                     parent.spawn(SceneBundle {
-                        scene: ass.load("purple-sword.gltf#Scene0"),
+                        scene: _my_assets.sword.clone_weak(),
                         transform: Transform::from_xyz(0.0, 0.0, 0.0),
                         ..default()
                     });
@@ -233,8 +222,4 @@ pub fn setup(
                 });
         })
         .insert(Player {});
-
-    load_state.into();
-
-    simulation_state_next_state.set(SimulationState::Setup);
 }

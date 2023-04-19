@@ -7,15 +7,12 @@ use super::{
 };
 
 use crate::AppState;
-use crate::GameOver;
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app
-            // Events
-            .add_event::<GameOver>()
             // States
             .add_state::<SimulationState>()
             // OnEnter Systems
@@ -37,5 +34,4 @@ pub enum SimulationState {
     #[default]
     Running,
     Paused,
-    Setup,
 }

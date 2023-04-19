@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-use super::ui::*;
 
 pub struct UiPlugin;
 

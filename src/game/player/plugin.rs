@@ -2,7 +2,6 @@ use bevy::prelude::*;
 
 use super::player::*;
 
-use crate::game::plugin::SimulationState;
 use crate::AppState;
 pub struct PlayerPlugin;
 

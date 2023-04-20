@@ -8,6 +8,8 @@ pub struct CameraMenu {}
 
 #[derive(Component)]
 pub struct PlayButton {}
+#[derive(Component)]
+pub struct OptionButton {}
 
 #[derive(Component)]
 pub struct QuitButton {}

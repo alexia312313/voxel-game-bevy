@@ -31,6 +31,7 @@ fn main() {
         // Systems
         .add_system(transition_to_game_state)
         .add_system(transition_to_main_menu_state)
+        .add_system(transition_to_options_state)
         .add_system(exit_game)
         .run();
 }
@@ -39,6 +40,7 @@ fn main() {
 pub enum AppState {
     #[default]
     MainMenu,
+    Options,
     Game,
 }
 

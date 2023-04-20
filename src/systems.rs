@@ -1,9 +1,7 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 
 use crate::AppState;
-use crate::GameOver;
 
 pub fn transition_to_main_menu_state(
     keyboard_input: Res<Input<KeyCode>>,
@@ -44,17 +42,6 @@ pub fn transition_to_game_state(
     }
 }
 
-pub fn handle_game_over(
-    mut game_over_event_reader: EventReader<GameOver>,
-    mut app_state_next_state: ResMut<NextState<AppState>>,
-) {
-    for event in game_over_event_reader.iter() {
-        println!("Your final score is: {}", event.score.to_string());
-        app_state_next_state.set(AppState::GameOver);
-        println!("Entered AppState::GameOver");
-    }
-}
-
 pub fn exit_game(
     keyboard_input: Res<Input<KeyCode>>,
     mut app_exit_event_writer: EventWriter<AppExit>,
@@ -62,8 +49,4 @@ pub fn exit_game(
     if keyboard_input.just_pressed(KeyCode::Escape) {
         app_exit_event_writer.send(AppExit);
     }
-}
-
-pub fn window_start(mut commands: Commands) {
-    commands.spawn(PrimaryWindow::default());
 }

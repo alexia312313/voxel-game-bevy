@@ -2,4 +2,4 @@ pub mod components;
 pub mod plugin;
 pub mod styles;
 pub mod systems;
-mod optionsMenu;
+pub mod option_menu;

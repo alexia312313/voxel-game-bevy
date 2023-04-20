@@ -2,7 +2,6 @@ use super::components::*;
 
 use super::resources::*;
 use crate::MyAssets;
-use bevy::asset::LoadState;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;

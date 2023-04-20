@@ -4,7 +4,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_rapier3d::prelude::*;
 
 use game::plugin::GamePlugin;
-use main_menu::plugin::MainMenuPlugin;
+use main_menu::plugin::{MainMenuPlugin, OptionMenuPlugin};
 
 pub mod game;
 pub mod main_menu;
@@ -27,6 +27,7 @@ fn main() {
         .add_plugin(WorldInspectorPlugin::new())
         // My Plugins
         .add_plugin(MainMenuPlugin)
+        .add_plugin(OptionMenuPlugin)
         .add_plugin(GamePlugin)
         // Systems
         .add_system(transition_to_game_state)

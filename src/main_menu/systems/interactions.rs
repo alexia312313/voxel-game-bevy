@@ -39,7 +39,7 @@ pub fn interact_with_options_button(
         match *interaction {
             Interaction::Clicked => {
                 *background_color = PRESSED_BUTTON_COLOR.into();
-                app_state_next_state.set(AppState::Options);
+                app_state_next_state.set(AppState::OptionsMenu);
             }
             Interaction::Hovered => {
                 *background_color = HOVERED_BUTTON_COLOR.into();

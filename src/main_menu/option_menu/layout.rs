@@ -9,7 +9,7 @@ pub fn spawn_options_menu(
     asset_server: Res<AssetServer>,
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-    build_options_menu(&mut commands, &asset_server);
+    build_option_menu(&mut commands, &asset_server);
 
     let window = window_query.get_single().unwrap();
 
@@ -57,7 +57,7 @@ pub fn build_option_menu(commands: &mut Commands, asset_server: &Res<AssetServer
                     parent.spawn(TextBundle {
                         text: Text {
                             sections: vec![TextSection::new(
-                                "Bevy Voxel Game",
+                                "OPTIONS MENU ",
                                 get_title_text_style(&asset_server),
                             )],
                             alignment: TextAlignment::Center,

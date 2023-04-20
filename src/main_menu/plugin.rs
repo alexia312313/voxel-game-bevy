@@ -4,7 +4,7 @@ use crate::AppState;
 
 use super::systems::interactions::*;
 use super::systems::layout::*;
-use super::optionsMenu::layout::*;
+use super::option_menu::layout::*;
 
 
 pub struct MainMenuPlugin;
@@ -33,10 +33,7 @@ pub struct OptionMenuPlugin;
 impl Plugin for OptionMenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(spawn_options_menu.in_schedule(OnEnter(AppState::OptionsMenu)))
-        //.add_systems((
-                //add interactions
-          //      ).in_set(OnUpdate(AppState::OptionsMenu)),
-       // )
-        .add_system(despawn_options_menu.in_schedule(OnExit(AppState::OptionsMenu)))
+        //.add_systems(().in_set(OnUpdate(AppState::OptionsMenu)),)
+        .add_system(despawn_options_menu.in_schedule(OnExit(AppState::OptionsMenu)));
     }
 }

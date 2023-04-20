@@ -22,8 +22,8 @@ pub fn transition_to_options_state(
     mut app_state_next_state: ResMut<NextState<AppState>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::O) {
-        if app_state.0 != AppState::OptionsMenu {
-            app_state_next_state.set(AppState::OptionsMenu);
+        if app_state.0 != AppState::Settings {
+            app_state_next_state.set(AppState::Settings);
             println!("Entered AppState::OptionState");
         }
     }

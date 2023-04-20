@@ -57,7 +57,7 @@ pub fn build_option_menu(commands: &mut Commands, asset_server: &Res<AssetServer
                     parent.spawn(TextBundle {
                         text: Text {
                             sections: vec![TextSection::new(
-                                "OPTIONS MENU ",
+                                "Settings MENU ",
                                 get_title_text_style(&asset_server),
                             )],
                             alignment: TextAlignment::Center,

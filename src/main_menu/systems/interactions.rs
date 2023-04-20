@@ -28,7 +28,7 @@ pub fn interact_with_play_button(
     }
 }
 
-pub fn interact_with_options_button(
+pub fn interact_with_settings_button(
     mut button_query: Query<
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<OptionButton>),
@@ -39,7 +39,7 @@ pub fn interact_with_options_button(
         match *interaction {
             Interaction::Clicked => {
                 *background_color = PRESSED_BUTTON_COLOR.into();
-                app_state_next_state.set(AppState::OptionsMenu);
+                app_state_next_state.set(AppState::Settings);
             }
             Interaction::Hovered => {
                 *background_color = HOVERED_BUTTON_COLOR.into();

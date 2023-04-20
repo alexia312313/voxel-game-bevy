@@ -4,7 +4,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_rapier3d::prelude::*;
 
 use game::plugin::GamePlugin;
-use main_menu::plugin::{MainMenuPlugin, OptionMenuPlugin};
+use main_menu::plugin::{MainMenuPlugin, SettingsPlugin};
 
 pub mod game;
 pub mod main_menu;
@@ -27,7 +27,7 @@ fn main() {
         .add_plugin(WorldInspectorPlugin::new())
         // My Plugins
         .add_plugin(MainMenuPlugin)
-        .add_plugin(OptionMenuPlugin)
+        .add_plugin(SettingsPlugin)
         .add_plugin(GamePlugin)
         // Systems
         .add_system(transition_to_game_state)
@@ -41,7 +41,7 @@ fn main() {
 pub enum AppState {
     #[default]
     MainMenu,
-    OptionsMenu,
+    Settings,
     Game,
 }
 

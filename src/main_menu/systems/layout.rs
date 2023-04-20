@@ -134,7 +134,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                                     parent.spawn(TextBundle {
                                         text: Text {
                                             sections: vec![TextSection::new(
-                                                "Options",
+                                                "Settings",
                                                 get_button_text_style(&asset_server),
                                             )],
                                             alignment: TextAlignment::Center,

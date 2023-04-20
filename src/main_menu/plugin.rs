@@ -4,7 +4,7 @@ use crate::AppState;
 
 use super::systems::interactions::*;
 use super::systems::layout::*;
-use super::option_menu::layout::*;
+use super::settings::layout::*;
 
 
 pub struct MainMenuPlugin;
@@ -19,7 +19,7 @@ impl Plugin for MainMenuPlugin {
                 (
                     interact_with_play_button,
                     interact_with_quit_button,
-                    interact_with_options_button,
+                    interact_with_settings_button,
                 )
                     .in_set(OnUpdate(AppState::MainMenu)),
             )
@@ -28,12 +28,12 @@ impl Plugin for MainMenuPlugin {
     }
 }
 
-pub struct OptionMenuPlugin;
+pub struct SettingsPlugin;
 
-impl Plugin for OptionMenuPlugin {
+impl Plugin for SettingsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_options_menu.in_schedule(OnEnter(AppState::OptionsMenu)))
-        //.add_systems(().in_set(OnUpdate(AppState::OptionsMenu)),)
-        .add_system(despawn_options_menu.in_schedule(OnExit(AppState::OptionsMenu)));
+        app.add_system(spawn_options_menu.in_schedule(OnEnter(AppState::Settings)))
+        //.add_systems(().in_set(OnUpdate(AppState::Settings)),)
+        .add_system(despawn_options_menu.in_schedule(OnExit(AppState::Settings)));
     }
 }

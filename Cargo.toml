@@ -10,6 +10,7 @@ bevy = "0.10.1"
 bevy-inspector-egui = "0.18.3"
 bevy_rapier3d = "0.21.0"
 big-brain = "0.17.0"
+bevy_asset_loader = "0.16.0"
 
 [profile.dev.package."*"]
 opt-level = 3

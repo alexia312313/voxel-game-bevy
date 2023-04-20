@@ -1,4 +1,6 @@
-use bevy::prelude::*;
+use std::f32::consts::PI;
+
+use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
 use bevy_rapier3d::prelude::Collider;
 
 pub fn setup(
@@ -6,22 +8,19 @@ pub fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    commands.spawn(PointLightBundle {
-        point_light: PointLight {
-            intensity: 9999.0,
+    // Light
+    commands.spawn(DirectionalLightBundle {
+        transform: Transform::from_rotation(Quat::from_euler(EulerRot::ZYX, 0.0, 1.0, -PI / 4.)),
+        directional_light: DirectionalLight {
             shadows_enabled: true,
             ..default()
         },
-        transform: Transform::from_xyz(4.0, 8.0, 4.0),
-        ..default()
-    });
-    commands.spawn(PointLightBundle {
-        point_light: PointLight {
-            intensity: 9999.0,
-            shadows_enabled: false,
+        cascade_shadow_config: CascadeShadowConfigBuilder {
+            first_cascade_far_bound: 200.0,
+            maximum_distance: 400.0,
             ..default()
-        },
-        transform: Transform::from_xyz(-4.0, 8.0, -4.0),
+        }
+        .into(),
         ..default()
     });
 

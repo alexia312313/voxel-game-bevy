@@ -6,6 +6,9 @@ pub struct Player {}
 #[derive(Component)]
 pub struct PlayerModel;
 
+#[derive(Component)]
+pub struct WeaponModel;
+
 #[derive(Default, Component)]
 pub struct PlayerController {
     pub yaw: Quat,

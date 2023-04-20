@@ -32,8 +32,8 @@ pub struct SettingsPlugin;
 
 impl Plugin for SettingsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_options_menu.in_schedule(OnEnter(AppState::Settings)))
+        app.add_system(spawn_settings_menu.in_schedule(OnEnter(AppState::Settings)))
         //.add_systems(().in_set(OnUpdate(AppState::Settings)),)
-        .add_system(despawn_options_menu.in_schedule(OnExit(AppState::Settings)));
+        .add_system(despawn_settings_menu.in_schedule(OnExit(AppState::Settings)));
     }
 }

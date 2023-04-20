@@ -4,7 +4,7 @@ use bevy::window::PrimaryWindow;
 use crate::main_menu::components::*;
 use crate::main_menu::styles::*;
 
-pub fn spawn_options_menu(
+pub fn spawn_settings_menu(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     window_query: Query<&Window, With<PrimaryWindow>>,
@@ -22,7 +22,7 @@ pub fn spawn_options_menu(
     ));
 }
 
-pub fn despawn_options_menu(
+pub fn despawn_settings_menu(
     mut commands: Commands,
     option_menu_query: Query<Entity, With<OptionMenu>>,
     camera_query: Query<Entity, With<CameraMenu>>,

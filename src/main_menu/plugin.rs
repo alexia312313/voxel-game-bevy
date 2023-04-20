@@ -4,6 +4,8 @@ use crate::AppState;
 
 use super::systems::interactions::*;
 use super::systems::layout::*;
+use super::optionsMenu::layout::*;
+
 
 pub struct MainMenuPlugin;
 
@@ -23,5 +25,18 @@ impl Plugin for MainMenuPlugin {
             )
             // OnExit State Systems
             .add_system(despawn_main_menu.in_schedule(OnExit(AppState::MainMenu)));
+    }
+}
+
+pub struct OptionMenuPlugin;
+
+impl Plugin for OptionMenuPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system(spawn_options_menu.in_schedule(OnEnter(AppState::OptionsMenu)))
+        //.add_systems((
+                //add interactions
+          //      ).in_set(OnUpdate(AppState::OptionsMenu)),
+       // )
+        .add_system(despawn_options_menu.in_schedule(OnExit(AppState::OptionsMenu)))
     }
 }

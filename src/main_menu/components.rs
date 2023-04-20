@@ -4,6 +4,9 @@ use bevy::prelude::Component;
 pub struct MainMenu {}
 
 #[derive(Component)]
+pub struct OptionMenu {}
+
+#[derive(Component)]
 pub struct CameraMenu {}
 
 #[derive(Component)]

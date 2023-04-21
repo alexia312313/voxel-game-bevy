@@ -72,7 +72,7 @@ pub fn move_player(
         for player in player_query.iter() {
             if let Ok(mut transform) = transforms.get_mut(player) {
                 let mut jump = Vec3::ZERO;
-                let mut direction = Vec3::ZERO;
+                let mut direction: Vec3 = Vec3::ZERO;
 
                 if keyboard_input.pressed(KeyCode::A) {
                     direction -= Vec3::new(0.1, 0.0, 0.0);

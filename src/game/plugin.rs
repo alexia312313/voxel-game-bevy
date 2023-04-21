@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use super::{
     mob::plugin::MobPlugin,
     player::plugin::PlayerPlugin,  
-    ui::plugin::UiHealthPlugin,
+    ui::plugin::UiPlugin,
     world::plugin::WorldPlugin,
 };
 
@@ -20,7 +20,7 @@ impl Plugin for GamePlugin {
             .add_plugin(WorldPlugin)
             .add_plugin(MobPlugin)
             .add_plugin(PlayerPlugin)
-            .add_plugin(UiHealthPlugin);
+            .add_plugin(UiPlugin);
         // Systems
         //.add_system(toggle_simulation.run_if(in_state(AppState::Game)))
         // Exit State Systems

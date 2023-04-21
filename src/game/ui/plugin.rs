@@ -1,11 +1,14 @@
 use bevy::prelude::*;
-use super ::health::layout::*;
 
-pub struct UiHealthPlugin;
+use super::ui::health::*;
+use crate::AppState;
 
-impl Plugin for UiHealthPlugin {
+pub struct UiPlugin;
+
+
+impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_ui_health.in_schedule(OnEnter(AppState::Game)))
-            .add_system(despawn_ui_health.in_schedule(OnExit(AppState::Game)));
+        app
+            .add_plugin(UiHealthPlugin)
     }
 }

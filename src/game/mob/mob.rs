@@ -1,5 +1,6 @@
 use std::thread::spawn;
 use bevy_rapier3d::na::Translation;
+use bevy_rapier3d::na::coordinates::X;
 use bevy_rapier3d::parry::transformation::utils::transform;
 use big_brain::prelude::*;
 use bevy::utils::tracing::{debug, trace};
@@ -12,6 +13,8 @@ use std::f32::consts::PI;
 use crate::game::player::player::Player;
 
 
+#[derive(Component)]
+pub struct Mob{}
 
 #[derive(Component, Debug)]
 pub struct Aggro {
@@ -91,12 +94,13 @@ pub fn aggro_action_system(
 
 #[derive(Clone, Component, Debug, ScorerBuilder)]
 pub struct Aggroed;
-
 // Looks familiar? It's a lot like Actions!
 pub fn aggro_scorer_system(
     aggros: Query<&Aggro>,
+    mobs: Query<Entity, With<Mob>>,
+    player: Query<Entity, With<Player>>,
     mut transforms: Query<&mut Transform>,
-
+    time : Res<Time>,
     // Same dance with the Actor here, but now we use look up Score instead of ActionState.
     mut query: Query<(&Actor, &mut Score, &ScorerSpan), With<Aggroed>>,
 ) {
@@ -112,11 +116,49 @@ pub fn aggro_scorer_system(
             score.set(aggro.aggro / 100.0);
             if aggro.aggro >= 80.0 {
                 span.span().in_scope(|| {
-                    let mut direction: Vec3 = Vec3::ZERO;
-                    print!("{:?}" , transforms)
-                    //print!("Aggro above threshold! Score: {}", aggro.aggro / 100.0)
+                    print!("{:?}" , mobs);
+                    let mut player_pos = Vec3::ZERO;
+                    if let Ok(creature)=player.get_single(){
+                    if let Ok(trans_player) = transforms.get(creature){
+                        player_pos = trans_player.translation
+                    }
+                }
 
+
+                        
+                    for mob in mobs.iter(){
+                        let mut direction=Vec3::ZERO;
+                        if let Ok(mut trans_mob)= transforms.get_mut(mob){
+
+                            if player_pos.z<trans_mob.translation.z{
+                                direction += Vec3::new(0.0,0.0,0.1);
+                            }
+
+                            if player_pos.z>trans_mob.translation.z{
+                                direction -= Vec3::new(0.0,0.0,0.1);
+                            }
+                            
+                            if player_pos.x<trans_mob.translation.x{
+                                direction += Vec3::new(0.1,0.0,0.0);
+                            }
+
+                            if player_pos.x<trans_mob.translation.x{
+                                direction -= Vec3::new(0.1,0.0,0.0);
+                            }
+                            
+                            //if player_pos.y<trans_mob.translation.y{
+                            //    direction+=Vec3::new(0.0,0.1,0.0);
+                            //}
+
+
+
+
+                            trans_mob.translation += direction*3.0*time.delta_seconds();
+                        }
+                        }
+                 
                 });
+            
             }
         }
     }
@@ -131,8 +173,8 @@ pub fn setup(
     commands.spawn(SceneBundle {
         scene: ass.load("slime.gltf#Scene0"),
         transform: Transform::from_xyz(0.0, 0.0, 0.0),
-        ..default()        
-    })
+        ..default()
+    }).insert(Mob{})
     .with_children(|parent| {
         parent.spawn((
             Aggro::new(75.0, 2.0),

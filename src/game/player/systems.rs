@@ -205,11 +205,13 @@ pub fn equip_weapon(
         let mut index: u16 = 0;
         for child in children.iter_descendants(entity) {
             index += 1;
-            if index == 5 {
+            if index == 4 {
                 commands.entity(child).with_children(|parent| {
                     parent.spawn((
                         SceneBundle {
                             scene: _my_assets.sword.clone_weak(),
+                            transform: Transform::from_xyz(0.0, -0.8, -0.2)
+                                .with_rotation(Quat::from_rotation_y(-0.2)),
                             ..default()
                         },
                         WeaponModel {},

@@ -1,9 +1,13 @@
 use std::thread::spawn;
 use bevy_rapier3d::na::Translation;
+use bevy_rapier3d::parry::transformation::utils::transform;
 use big_brain::prelude::*;
 use bevy::utils::tracing::{debug, trace};
 use bevy::{prelude::*, transform};
 use bevy_rapier3d::prelude::*;
+use std::f32::consts::PI;
+
+
 
 use crate::game::player::player::Player;
 
@@ -46,7 +50,7 @@ pub fn aggro_action_system(
      transform: Query<& Transform, With<Player>>,
     ) {
     for (Actor(actor), mut state, attack, span) in &mut query {
-          // This sets up the tracing scope. Any `debug` calls here will be
+        // This sets up the tracing scope. Any `debug` calls here will be
         // spanned together in the output.
         let _guard = span.span().enter();
 
@@ -61,8 +65,9 @@ pub fn aggro_action_system(
                     trace!("Attacking...");
                     
                     if let Ok(translate) = transform.get_single(){
-                        let player_pos = translate.translation;
-                        print!("{:?}" , player_pos);
+                        //let player_pos = translate.translation;
+                        //print!("{:?}" , player_pos);
+                        
                     } 
                     /*aggro.aggro -=
                         attack.per_second * (time.delta().as_micros() as f32 / 1_000_000.0);*/
@@ -90,6 +95,8 @@ pub struct Aggroed;
 // Looks familiar? It's a lot like Actions!
 pub fn aggro_scorer_system(
     aggros: Query<&Aggro>,
+    mut transforms: Query<&mut Transform>,
+
     // Same dance with the Actor here, but now we use look up Score instead of ActionState.
     mut query: Query<(&Actor, &mut Score, &ScorerSpan), With<Aggroed>>,
 ) {
@@ -105,12 +112,16 @@ pub fn aggro_scorer_system(
             score.set(aggro.aggro / 100.0);
             if aggro.aggro >= 80.0 {
                 span.span().in_scope(|| {
-                    print!("Aggro above threshold! Score: {}", aggro.aggro / 100.0)
+                    let mut direction: Vec3 = Vec3::ZERO;
+                    print!("{:?}" , transforms)
+                    //print!("Aggro above threshold! Score: {}", aggro.aggro / 100.0)
+
                 });
             }
         }
     }
 }
+
 
 pub fn setup(
     mut commands: Commands,

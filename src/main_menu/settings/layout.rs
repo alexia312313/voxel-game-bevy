@@ -41,7 +41,7 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
     let settings_menu_entity = commands
         .spawn((
             NodeBundle {
-                style: MAIN_MENU_STYLE,
+                style: main_menu_style,
                 ..default()
             },
             Settings {},
@@ -50,7 +50,7 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
             //Title
             parent
                 .spawn(NodeBundle {
-                    style: TITLE_STYLE,
+                    style: title_style,
                     ..default()
                 })
                 .with_children(|parent| {
@@ -71,7 +71,7 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
             //Bottom holder
             parent
                 .spawn(NodeBundle {
-                    style: BOTTOM_HOLDER,
+                    style: bottom_holder,
 
                     ..Default::default()
                 })
@@ -80,13 +80,13 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
 
                     parent
                         .spawn(NodeBundle {
-                            style: IMAGE_HOLDER,
+                            style: image_holder,
                             ..Default::default()
                         })
                         .with_children(|parent| {
                             //Image Loader
                             parent.spawn(ImageBundle {
-                                style: IMAGE_STYLE,
+                                style: image_style,
                                 image: asset_server.load("campfire.png").into(),
                                 ..Default::default()
                             });
@@ -95,7 +95,7 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
                     // Menu
                     parent
                         .spawn(NodeBundle {
-                            style: TEXT_MENU,
+                            style: text_menu,
                             ..Default::default()
                         })
                         .with_children(|parent| {
@@ -103,8 +103,8 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
                             parent
                                 .spawn((
                                     ButtonBundle {
-                                        style: BUTTON_STYLE,
-                                        background_color: NORMAL_BUTTON_COLOR.into(),
+                                        style: button_style,
+                                        background_color: normal_button_color.into(),
                                         ..default()
                                     },
                                     PlayButton {},
@@ -126,8 +126,8 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
                             parent
                                 .spawn((
                                     ButtonBundle {
-                                        style: BUTTON_STYLE,
-                                        background_color: NORMAL_BUTTON_COLOR.into(),
+                                        style: button_style,
+                                        background_color: normal_button_color.into(),
                                         ..default()
                                     },
                                     OptionButton {},
@@ -150,8 +150,8 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
                             parent
                                 .spawn((
                                     ButtonBundle {
-                                        style: BUTTON_STYLE,
-                                        background_color: NORMAL_BUTTON_COLOR.into(),
+                                        style: button_style,
+                                        background_color: normal_button_color.into(),
                                         ..default()
                                     },
                                     QuitButton {},

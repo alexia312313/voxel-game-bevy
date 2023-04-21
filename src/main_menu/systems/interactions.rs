@@ -2,7 +2,7 @@ use bevy::app::AppExit;
 use bevy::prelude::*;
 
 use crate::main_menu::components::*;
-use crate::main_menu::styles::{HOVERED_BUTTON_COLOR, NORMAL_BUTTON_COLOR, PRESSED_BUTTON_COLOR};
+use crate::main_menu::styles::{HOVERED_BUTTON_COLOR, normal_button_color, PRESSED_BUTTON_COLOR};
 use crate::AppState;
 
 pub fn interact_with_play_button(
@@ -22,7 +22,7 @@ pub fn interact_with_play_button(
                 *background_color = HOVERED_BUTTON_COLOR.into();
             }
             Interaction::None => {
-                *background_color = NORMAL_BUTTON_COLOR.into();
+                *background_color = normal_button_color.into();
             }
         }
     }
@@ -45,7 +45,7 @@ pub fn interact_with_settings_button(
                 *background_color = HOVERED_BUTTON_COLOR.into();
             }
             Interaction::None => {
-                *background_color = NORMAL_BUTTON_COLOR.into();
+                *background_color = normal_button_color.into();
             }
         }
     }
@@ -67,7 +67,7 @@ pub fn interact_with_quit_button(
                 *background_color = HOVERED_BUTTON_COLOR.into();
             }
             Interaction::None => {
-                *background_color = NORMAL_BUTTON_COLOR.into();
+                *background_color = normal_button_color.into();
             }
         }
     }

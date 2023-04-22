@@ -18,7 +18,8 @@ impl Plugin for UiPlugin {
             //systems
             .add_system(update_health_text)
             .add_system(update_score_text)
-
+            //testing
+            .add_system(add_score_health)
 
             ;
     }

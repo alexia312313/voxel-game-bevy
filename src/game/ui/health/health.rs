@@ -17,9 +17,12 @@ pub fn spawn_ui_health(
     commands.spawn((
         Camera2dBundle{
             transform: Transform::from_xyz(window.width()/2.0,window.height()/2.0,0.0),
+           camera:Camera{order:(0),..default()},
             ..default()
         },
-        UICamera{},
+        UICamera{
+
+        },
     ));
 
 }

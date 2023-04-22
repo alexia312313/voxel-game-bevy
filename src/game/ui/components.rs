@@ -1,7 +1,9 @@
 use bevy::prelude::Component;
 
 #[derive(Component)]
-pub struct UICamera {}
+pub struct UICamera {
+    
+}
 
 
 #[derive(Component)]

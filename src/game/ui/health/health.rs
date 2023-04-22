@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use crate::main_menu::components::*;
+use crate::game::ui::components::*;
+
 use crate::main_menu::styles::*;
 
 pub fn spawn_ui_health(
@@ -20,13 +21,14 @@ pub fn spawn_ui_health(
         },
         UICamera{},
     ));
+
 }
 
 pub fn despawn_ui_health(
     mut commands: Commands,
- ui_health_query: Query<Entity, With<UiHealth>>,
+    ui_health_query: Query<Entity, With<UiHealth>>,
     camera_query: Query<Entity, With<UICamera>>,
-    ){
+){
         
     if let Ok(ui_health_entity) = ui_health_query.get_single() {
         commands.entity(ui_health_entity).despawn_recursive();
@@ -40,7 +42,7 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
     let ui_health_entity = commands
         .spawn((
             NodeBundle {
-                style: main_menu_style,
+                style: MAIN_MENU_STYLE,
                 ..default()
             },
             UiHealth {},
@@ -49,7 +51,7 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
             //Title
             parent
                 .spawn(NodeBundle {
-                    style: title_style,
+                    style: TITLE_STYLE,
                     ..default()
                 })
                 .with_children(|parent| {

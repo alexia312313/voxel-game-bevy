@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
-use super::ui::health::*;
-use crate::AppState;
+use crate::game::ui::health::plugin::UiHealthPlugin;
 
 pub struct UiPlugin;
 
@@ -9,6 +8,6 @@ pub struct UiPlugin;
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugin(UiHealthPlugin)
+            .add_plugin(UiHealthPlugin);
     }
 }

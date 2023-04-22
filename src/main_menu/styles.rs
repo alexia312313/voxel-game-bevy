@@ -6,11 +6,11 @@ pub const TRY_COLOR2: Color = Color::BLUE;
 pub const TRY_COLOR3: Color = Color::GREEN;
 pub const TRY_COLOR4: Color = Color::YELLOW;
 
-pub const normal_button_color: Color = Color::rgb(0.15, 0.15, 0.15);
+pub const NORMAL_BUTTON_COLOR: Color = Color::rgb(0.15, 0.15, 0.15);
 pub const HOVERED_BUTTON_COLOR: Color = Color::rgb(0.25, 0.25, 0.25);
 pub const PRESSED_BUTTON_COLOR: Color = Color::rgb(0.35, 0.75, 0.35);
 
-pub const main_menu_style: Style = Style {
+pub const MAIN_MENU_STYLE: Style = Style {
     flex_direction: FlexDirection::Column,
     justify_content: JustifyContent::Start,
     align_items: AlignItems::Center,
@@ -19,7 +19,7 @@ pub const main_menu_style: Style = Style {
     ..Style::DEFAULT
 };
 
-pub const button_style: Style = Style {
+pub const BUTTON_STYLE: Style = Style {
     justify_content: JustifyContent::Center,
     align_items: AlignItems::Center,
     margin: UiRect::new(Val::Px(0.0), Val::Px(0.0), Val::Px(20.0), Val::Px(20.0)),
@@ -28,7 +28,7 @@ pub const button_style: Style = Style {
     ..Style::DEFAULT
 };
 
-pub const title_style: Style = Style {
+pub const TITLE_STYLE: Style = Style {
     flex_direction: FlexDirection::Row,
     justify_content: JustifyContent::Center,
     align_items: AlignItems::Center,
@@ -54,20 +54,20 @@ pub fn get_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
     }
 }
 
-pub const bottom_holder: Style = Style{
+pub const BOTTOM_HOLDER: Style = Style{
     flex_direction: FlexDirection::Row,
     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),    
     justify_content: JustifyContent::SpaceEvenly,
     ..Style::DEFAULT
 }; 
 
-pub const image_holder: Style = Style{
+pub const IMAGE_HOLDER: Style = Style{
     flex_direction: FlexDirection::ColumnReverse,
     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),    
    
     ..Style::DEFAULT
 }; 
-pub const image_style: Style = Style {
+pub const IMAGE_STYLE: Style = Style {
     justify_content:JustifyContent::FlexEnd,
     //1920x1080 
     size: Size::new(Val::Px(1344.0), Val::Px(756.0)),    
@@ -77,7 +77,7 @@ pub const image_style: Style = Style {
 };
 
 
-pub const text_menu: Style = Style{
+pub const TEXT_MENU: Style = Style{
     flex_direction: FlexDirection::Column,
     justify_content:JustifyContent::Center,
     size: Size::new(Val::Percent(25.0), Val::Percent(100.0)),    

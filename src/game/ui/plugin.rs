@@ -12,13 +12,12 @@ impl Plugin for UiPlugin {
         app
             //resources
             .init_resource::<Score>()
+            .init_resource::<Health>()
             //plugins
             .add_plugin(UiHealthPlugin)
             //systems
-            //.add_system(update_health_text)
-            //.add_system(update_score_text)
-            
-
+            .add_system(update_health_text)
+            .add_system(update_score_text)
 
 
             ;

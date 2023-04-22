@@ -19,7 +19,7 @@ pub struct Score{
 }
 
 impl Default for Score{
-    fn default()-> Score{
+    fn default()->  Score{
         Score{
             value:0
         }

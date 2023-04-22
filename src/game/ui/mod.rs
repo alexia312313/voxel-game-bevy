@@ -1,4 +1,6 @@
 pub mod plugin;
 pub mod ui;
-mod health;
 pub mod components;
+pub mod styles;
+pub mod update;
+mod health;

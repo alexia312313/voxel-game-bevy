@@ -1,13 +1,19 @@
 use bevy::prelude::*;
 
-use super::player::*;
+use super::systems::*;
 
+use crate::AppState;
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(setup)
-            .add_system(move_player)
-            .add_system(rotate_camera);
+        app
+            // On Enter State
+            .add_system(setup.in_schedule(OnEnter(AppState::Game)))
+            // Systems
+            .add_systems(
+                (move_player, rotate_camera, link_animations, equip_weapon)
+                    .in_set(OnUpdate(AppState::Game)),
+            );
     }
 }

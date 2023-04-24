@@ -37,17 +37,17 @@ pub fn setup(
     
     //ground
     commands
-         .spawn(PbrBundle {
+   /*     .spawn(PbrBundle {
             mesh: meshes.add(shape::Plane::from_size(100.0).into()),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
 
         }) 
          .insert(Collider::cuboid(50.0, 1.0, 50.0))
-         
-      //  .spawn(Collider::cuboid(50.0, 1.0, 50.0))
+         */  
+        .spawn(Collider::cuboid(50.0, 1.0, 50.0))
         .insert(Name::new("Ground"));
-
+ 
 
 // testing
     commands

@@ -7,6 +7,12 @@ use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
 
+
+
+    
+ 
+
+
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
     mouse_input: Res<Input<MouseButton>>,
@@ -47,6 +53,7 @@ pub fn move_player(
 
                         if keyboard_input.pressed(KeyCode::Space) {
                             jump += Vec3::new(0.0, 2.0, 0.0);
+                            println!("jump");
                         }
 
                         if direction.length() > 0.0 {
@@ -230,7 +237,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             .insert(Name::new("player controller"));
     commands
         .spawn(SceneBundle { ..default() })
-        .insert(RigidBody::KinematicPositionBased)
+        .insert(RigidBody::Dynamic)
         .insert(GravityScale(1.0))
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .insert(Name::new("Player"))
@@ -263,6 +270,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .with_children(|children| {
             children
                 .spawn(Collider::cuboid(0.2, 0.5, 0.2))
+                .insert(ActiveEvents::COLLISION_EVENTS)
                 .insert(TransformBundle {
                     local: Transform::from_xyz(0.0, 0.6, 0.0),
                     global: Default::default(),
@@ -271,3 +279,29 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .insert(Player {})
         .insert(Name::new("player collider"));
 }
+
+
+pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
+    for active_event in collider.iter_mut(){
+        println!("{:?}",active_event);
+        } 
+    }
+
+  pub  fn init_system(mut commands: Commands) {
+        commands.spawn(RigidBody::KinematicPositionBased)
+            .insert(Collider::ball(0.5))
+            .insert(KinematicCharacterController::default());
+    }
+
+ pub   fn read_result_system(controllers: Query<(Entity, &KinematicCharacterControllerOutput)>) {
+        for (entity, output) in controllers.iter() {
+            println!("Entity {:?} moved by {:?} and touches the ground: {:?}",
+                      entity, output.effective_translation, output.grounded);
+        }
+    }
+
+  pub  fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
+        for mut controller in controllers.iter_mut() {
+            controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
+        }
+    }

@@ -69,7 +69,7 @@ pub fn move_player(
                         transform.translation += jump * 3.0 * time.delta_seconds();
                     }
                 }
-                /* Rotate
+
                 if let Ok(child_entities) = children.get(player) {
                     for child_entity in child_entities.iter() {
                         if let Ok(mut transform) = transforms.get_mut(*child_entity) {
@@ -90,7 +90,6 @@ pub fn move_player(
                         }
                     }
                 }
-                */
             }
         }
     }
@@ -205,11 +204,13 @@ pub fn equip_weapon(
         let mut index: u16 = 0;
         for child in children.iter_descendants(entity) {
             index += 1;
-            if index == 5 {
+            if index == 4 {
                 commands.entity(child).with_children(|parent| {
                     parent.spawn((
                         SceneBundle {
                             scene: _my_assets.sword.clone_weak(),
+                            transform: Transform::from_xyz(0.0, -0.8, -0.2)
+                                .with_rotation(Quat::from_rotation_y(-0.2)),
                             ..default()
                         },
                         WeaponModel {},
@@ -240,8 +241,9 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                     far: 2048.0,
                     ..default()
                 }),
-                transform: Transform::from_xyz(0.0, 2.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
-                camera:Camera { order: (1), ..default() },
+                transform: Transform::from_xyz(0.0, 1.4, 0.8)
+                    .with_rotation(Quat::from_rotation_x(-0.5)),
+                     camera:Camera { order: (1), ..default() },
                 ..default()
             });
             parent.spawn((

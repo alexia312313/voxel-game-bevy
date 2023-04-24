@@ -61,7 +61,7 @@ pub fn aggro_action_system(
         if let Ok(mut aggro) = aggros.get_mut(*actor) {
             match *state {
                 ActionState::Requested => {
-                    print!("Time to attack some player!");
+                   // print!("Time to attack some player!");
                     *state = ActionState::Executing;
                 }
                 ActionState::Executing => {
@@ -69,8 +69,7 @@ pub fn aggro_action_system(
                     
                     if let Ok(translate) = transform.get_single(){
                         //let player_pos = translate.translation;
-                        //print!("{:?}" , player_pos);
-                        
+                        //print!("{:?}" , player_pos);                        
                     } 
                     /*aggro.aggro -=
                         attack.per_second * (time.delta().as_micros() as f32 / 1_000_000.0);*/
@@ -116,50 +115,40 @@ pub fn aggro_scorer_system(
             score.set(aggro.aggro / 100.0);
             if aggro.aggro >= 80.0 {
                 span.span().in_scope(|| {
-                    print!("{:?}" , mobs);
+                    //print!("{:?}" , mobs);
                     let mut player_pos = Vec3::ZERO;
                     if let Ok(creature)=player.get_single(){
                     if let Ok(trans_player) = transforms.get(creature){
                         player_pos = trans_player.translation
                     }
                 }
-
-
-                        
                     for mob in mobs.iter(){
                         let mut direction=Vec3::ZERO;
                         if let Ok(mut trans_mob)= transforms.get_mut(mob){
-
                             if player_pos.z<trans_mob.translation.z{
-                                direction += Vec3::new(0.0,0.0,0.1);
-                            }
-
-                            if player_pos.z>trans_mob.translation.z{
                                 direction -= Vec3::new(0.0,0.0,0.1);
                             }
-                            
-                            if player_pos.x<trans_mob.translation.x{
-                                direction += Vec3::new(0.1,0.0,0.0);
+                            if player_pos.z>trans_mob.translation.z{
+                                direction += Vec3::new(0.0,0.0,0.1);
                             }
-
                             if player_pos.x<trans_mob.translation.x{
                                 direction -= Vec3::new(0.1,0.0,0.0);
                             }
-                            
+                            if player_pos.x>trans_mob.translation.x{
+                                direction += Vec3::new(0.1,0.0,0.0);
+                            }
                             //if player_pos.y<trans_mob.translation.y{
                             //    direction+=Vec3::new(0.0,0.1,0.0);
                             //}
 
-
-
-
-                            trans_mob.translation += direction*3.0*time.delta_seconds();
+                            print!("{:?}" , direction);
+                            trans_mob.translation += direction*10.0*time.delta_seconds();
                         }
                         }
                  
                 });
             
-            }
+            } 
         }
     }
 }

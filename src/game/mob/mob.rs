@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_rapier3d::prelude::{RigidBody, Collider};
 use big_brain::prelude::*;
 
 use crate::{game::player::components::Player, MyAssets};
@@ -126,7 +127,6 @@ pub fn aggro_scorer_system(
                             //if player_pos.y<trans_mob.translation.y{
                             //    direction+=Vec3::new(0.0,0.1,0.0);
                             //}
-
                             //print!("{:?}", direction);
                             trans_mob.translation += direction * 10.0 * time.delta_seconds();
                         }
@@ -144,7 +144,10 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
         })
+        .insert(RigidBody::Dynamic)
+        .insert(Collider::cuboid(0.1, 0.1, 0.1))
         .insert(Mob {})
+        .insert(Name::new("slime mob"))
         .with_children(|parent| {
             parent.spawn((
                 Aggro::new(75.0, 2.0),

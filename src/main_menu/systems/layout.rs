@@ -19,7 +19,7 @@ pub fn spawn_main_menu(
             ..default()
         },
         CameraMenu {},
-    ));
+    )).insert(Name::new("Main menu 2d camera"));
 }
 
 pub fn despawn_main_menu(

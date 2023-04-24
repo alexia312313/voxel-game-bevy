@@ -12,7 +12,7 @@ impl Plugin for PlayerPlugin {
             .add_system(setup.in_schedule(OnEnter(AppState::Game)))
             // Systems
             .add_systems(
-                (move_player, rotate_camera, link_animations, equip_weapon)
+                (move_player, rotate_camera, link_animations, equip_weapon,check_collider,read_result_system,update_system)
                     .in_set(OnUpdate(AppState::Game)),
             );
     }

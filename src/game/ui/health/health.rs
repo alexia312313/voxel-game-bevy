@@ -23,7 +23,8 @@ pub fn spawn_ui_health(
             ..default()
         },
         UICamera {},
-    ));
+    ))
+    .insert(Name::new("UI camera 2d"));
 }
 
 pub fn despawn_ui_health(
@@ -47,7 +48,7 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 ..default()
             },
             UiHealth {},
-        ))
+        )).insert(Name::new("UIhealth setup"))
         .with_children(|parent| {
             parent
                 .spawn(NodeBundle {

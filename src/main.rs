@@ -3,9 +3,10 @@ use bevy_asset_loader::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_rapier3d::prelude::*;
 
-use big_brain::BigBrainPlugin;
 use game::plugin::GamePlugin;
 use main_menu::plugin::{MainMenuPlugin, SettingsPlugin};
+
+use bevy::window::WindowMode;
 
 pub mod game;
 pub mod main_menu;
@@ -14,7 +15,15 @@ mod systems;
 use systems::*;
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin{
+            primary_window:Some(Window{
+                title:"Voxel game".into(),
+                mode:WindowMode::Fullscreen,
+                ..default()
+
+            }),
+           ..default()
+        }))
         .add_state::<AppState>()
         // Asset Loading
         .add_state::<GameState>()
@@ -23,7 +32,9 @@ fn main() {
         )
         .add_collection_to_loading_state::<_, MyAssets>(GameState::AssetLoading)
         // Plugins
+     //   .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+
         .add_plugin(RapierDebugRenderPlugin::default())
         .add_plugin(WorldInspectorPlugin::new())
         // My Plugins
@@ -34,7 +45,6 @@ fn main() {
         .add_system(transition_to_game_state)
         .add_system(transition_to_main_menu_state)
         .add_system(transition_to_options_state)
-        .add_plugin(BigBrainPlugin)
         .run();
 }
 

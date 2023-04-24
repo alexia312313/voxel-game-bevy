@@ -6,6 +6,8 @@ use bevy_rapier3d::prelude::*;
 use game::plugin::GamePlugin;
 use main_menu::plugin::{MainMenuPlugin, SettingsPlugin};
 
+use bevy::window::WindowMode;
+
 pub mod game;
 pub mod main_menu;
 mod systems;
@@ -13,7 +15,15 @@ mod systems;
 use systems::*;
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin{
+            primary_window:Some(Window{
+                title:"Voxel game".into(),
+                mode:WindowMode::Fullscreen,
+                ..default()
+
+            }),
+           ..default()
+        }))
         .add_state::<AppState>()
         // Asset Loading
         .add_state::<GameState>()

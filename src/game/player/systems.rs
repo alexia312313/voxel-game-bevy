@@ -190,7 +190,6 @@ fn get_top_parent(mut curr_entity: Entity, parent_query: &Query<&Parent>) -> Ent
 }
 
 pub fn equip_weapon(
-    time: Res<Time>,
     player_model: Query<Entity, With<PlayerModel>>,
     weapon_model: Query<Entity, With<WeaponModel>>,
     children: Query<&Children>,
@@ -227,24 +226,6 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         _my_assets.player_animation_walking.clone_weak(),
         _my_assets.player_animation_idle.clone_weak(),
     ]));
-
-    commands
-        .spawn(SceneBundle {
-            scene: _my_assets.slime.clone_weak(),
-            transform: Transform::from_rotation(Quat::from_rotation_y(PI / 2.0)),
-            ..default()
-        })
-        .insert(RigidBody::Dynamic)
-        .insert(GravityScale(1.0))
-        .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
-        .with_children(|children| {
-            children
-                .spawn(Collider::cuboid(0.2, 0.2, 0.2))
-                .insert(TransformBundle {
-                    local: Transform::from_xyz(0.0, 0.3, 0.0),
-                    global: Default::default(),
-                });
-        });
 
     commands.spawn(PlayerController::default());
     commands

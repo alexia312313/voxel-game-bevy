@@ -19,7 +19,7 @@ pub fn spawn_settings_menu(
             ..default()
         },
         CameraMenu {},
-    ));
+    )).insert(Name::new("Menu camera settings 2d"));
 }
 
 pub fn despawn_settings_menu(

@@ -23,7 +23,8 @@ pub fn spawn_ui_health(
             ..default()
         },
         UICamera {},
-    ));
+    ))
+    .insert(Name::new("UI camera 2d"));
 }
 
 pub fn despawn_ui_health(

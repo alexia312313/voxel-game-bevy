@@ -3,7 +3,6 @@ use bevy_asset_loader::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_rapier3d::prelude::*;
 
-use big_brain::BigBrainPlugin;
 use game::plugin::GamePlugin;
 use main_menu::plugin::{MainMenuPlugin, SettingsPlugin};
 
@@ -23,7 +22,9 @@ fn main() {
         )
         .add_collection_to_loading_state::<_, MyAssets>(GameState::AssetLoading)
         // Plugins
+     //   .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+
         .add_plugin(RapierDebugRenderPlugin::default())
         .add_plugin(WorldInspectorPlugin::new())
         // My Plugins
@@ -34,7 +35,6 @@ fn main() {
         .add_system(transition_to_game_state)
         .add_system(transition_to_main_menu_state)
         .add_system(transition_to_options_state)
-        .add_plugin(BigBrainPlugin)
         .run();
 }
 

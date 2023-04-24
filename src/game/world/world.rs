@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
-use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
-use bevy_rapier3d::prelude::Collider;
+use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*, transform::commands};
+use bevy_rapier3d::prelude::{Collider, RigidBody, Restitution};
 
 pub fn setup(
     mut commands: Commands,
@@ -29,15 +29,35 @@ pub fn setup(
         }
         .into(),
         ..default()
-    });
 
+        
+    })
+    .insert(Name::new("Sun"));
+    
+    
+    //ground
     commands
-        .spawn(PbrBundle {
+       /*  .spawn(PbrBundle {
             mesh: meshes.add(shape::Plane::from_size(100.0).into()),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
-        })
-        .insert(Collider::cuboid(50.0, 0.1, 50.0));
+
+        }) 
+         .insert(Collider::cuboid(50.0, 0.1, 50.0))
+         */
+        .spawn(Collider::cuboid(50.0, 1.0, 50.0))
+        .insert(Name::new("Ground"));
+
+
+// testing
+    commands
+        .spawn(RigidBody::Dynamic)
+        .insert(Collider::ball(0.5))
+        .insert(Name::new("Ball"))
+        .insert(Restitution::coefficient(0.7))
+        .insert(TransformBundle::from_transform(Transform::from_xyz(0.0,1.0, 0.0)));
+
+
 }
 
 pub fn animate_light_direction(
@@ -47,4 +67,6 @@ pub fn animate_light_direction(
     for mut transform in &mut query {
         transform.rotate_y(time.delta_seconds() * 0.05);
     }
+
+
 }

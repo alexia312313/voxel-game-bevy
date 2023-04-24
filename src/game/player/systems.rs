@@ -231,6 +231,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .insert(RigidBody::Dynamic)
         .insert(GravityScale(1.0))
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
+        .insert(Name::new("UserPlayer"))
         .with_children(|parent| {
             parent.spawn(Camera3dBundle {
                 projection: Perspective(PerspectiveProjection {

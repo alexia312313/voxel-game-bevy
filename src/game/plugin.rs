@@ -7,6 +7,9 @@ use super::{
     world::plugin::WorldPlugin,
 };
 
+use big_brain::BigBrainPlugin;
+
+
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
@@ -20,7 +23,11 @@ impl Plugin for GamePlugin {
             .add_plugin(WorldPlugin)
             .add_plugin(MobPlugin)
             .add_plugin(PlayerPlugin)
-            .add_plugin(UiPlugin);
+            .add_plugin(UiPlugin)
+
+            //external plugin
+            .add_plugin(BigBrainPlugin);
+
         // Systems
         //.add_system(toggle_simulation.run_if(in_state(AppState::Game)))
         // Exit State Systems

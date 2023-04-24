@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use big_brain::prelude::*;
 
-use crate::game::player::components::Player;
+use crate::{game::player::components::Player, MyAssets};
 
 #[derive(Component)]
 pub struct Mob {}
@@ -40,7 +40,6 @@ pub fn aggro_action_system(
     // We execute actions by querying for their associated Action Component
     // (Drink in this case). You'll always need both Actor and ActionState.
     mut query: Query<(&Actor, &mut ActionState, &Attack, &ActionSpan)>,
-    transform: Query<&Transform, With<Player>>,
 ) {
     for (Actor(actor), mut state, attack, span) in &mut query {
         // This sets up the tracing scope. Any `debug` calls here will be
@@ -57,12 +56,9 @@ pub fn aggro_action_system(
                 ActionState::Executing => {
                     trace!("Attacking...");
 
-                    if let Ok(translate) = transform.get_single() {
-                        //let player_pos = translate.translation;
-                        //print!("{:?}" , player_pos);
-                    }
-                    /*aggro.aggro -=
-                    attack.per_second * (time.delta().as_micros() as f32 / 1_000_000.0);*/
+                    aggro.aggro -=
+                        attack.per_second * (time.delta().as_micros() as f32 / 1_000_000.0);
+                    aggro.aggro = 200.0; //TEST
                     if aggro.aggro <= attack.until {
                         // To "finish" an action, we set its state to Success or
                         // Failure.
@@ -141,11 +137,10 @@ pub fn aggro_scorer_system(
     }
 }
 
-pub fn setup(mut commands: Commands, ass: Res<AssetServer>) {
-    print!("Hem creat un slime");
+pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
     commands
         .spawn(SceneBundle {
-            scene: ass.load("slime.gltf#Scene0"),
+            scene: _my_assets.slime.clone_weak(),
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
         })

@@ -100,8 +100,6 @@ pub fn rotate_camera(
     mut controller_query: Query<&mut PlayerController>,
     mut mouse_events: EventReader<MouseMotion>,
     player_query: Query<Entity, With<Player>>,
-    camera: Query<&Camera3d>,
-    children: Query<&Children>,
     mut transforms: Query<&mut Transform>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
     time: Res<Time>,

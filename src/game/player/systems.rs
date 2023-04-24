@@ -243,6 +243,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                 }),
                 transform: Transform::from_xyz(0.0, 1.4, 0.8)
                     .with_rotation(Quat::from_rotation_x(-0.5)),
+                     camera:Camera { order: (1), ..default() },
                 ..default()
             });
             parent.spawn((

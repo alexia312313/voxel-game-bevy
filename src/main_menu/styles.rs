@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-
 pub const TRY_COLOR: Color = Color::RED;
 pub const TRY_COLOR2: Color = Color::BLUE;
 pub const TRY_COLOR3: Color = Color::GREEN;

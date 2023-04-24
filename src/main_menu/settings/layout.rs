@@ -24,9 +24,10 @@ pub fn spawn_settings_menu(
 
 pub fn despawn_settings_menu(
     mut commands: Commands,
-    settings_menu_query: Query<Entity, With<OptionMenu>>,
+    settings_menu_query: Query<Entity, With<Settings>>,
     camera_query: Query<Entity, With<CameraMenu>>,
 ) {
+    print!("despawn setting menu");
     if let Ok(settings_menu_entity) = settings_menu_query.get_single() {
         commands.entity(settings_menu_entity).despawn_recursive();
     }
@@ -43,7 +44,7 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
                 style: MAIN_MENU_STYLE,
                 ..default()
             },
-            MainMenu {},
+            Settings {},
         ))
         .with_children(|parent| {
             //Title

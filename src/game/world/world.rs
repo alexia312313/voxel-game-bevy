@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*, transform::commands};
+use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
 use bevy_rapier3d::prelude::{Collider, RigidBody, Restitution};
 
 pub fn setup(
@@ -37,15 +37,15 @@ pub fn setup(
     
     //ground
     commands
-       /*  .spawn(PbrBundle {
+         .spawn(PbrBundle {
             mesh: meshes.add(shape::Plane::from_size(100.0).into()),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
 
         }) 
-         .insert(Collider::cuboid(50.0, 0.1, 50.0))
-         */
-        .spawn(Collider::cuboid(50.0, 1.0, 50.0))
+         .insert(Collider::cuboid(50.0, 1.0, 50.0))
+         
+      //  .spawn(Collider::cuboid(50.0, 1.0, 50.0))
         .insert(Name::new("Ground"));
 
 

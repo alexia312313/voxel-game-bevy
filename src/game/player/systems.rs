@@ -211,7 +211,8 @@ pub fn equip_weapon(
                             ..default()
                         },
                         WeaponModel {},
-                    ));
+
+                    )).insert(Name::new("Weapon model"));
                 });
             }
         }
@@ -225,13 +226,14 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         _my_assets.player_animation_idle.clone_weak(),
     ]));
 
-    commands.spawn(PlayerController::default());
+    commands.spawn(PlayerController::default())
+            .insert(Name::new("player controller"));
     commands
         .spawn(SceneBundle { ..default() })
-        .insert(RigidBody::Dynamic)
+        .insert(RigidBody::KinematicPositionBased)
         .insert(GravityScale(1.0))
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
-        .insert(Name::new("UserPlayer"))
+        .insert(Name::new("Player"))
         .with_children(|parent| {
             parent.spawn(Camera3dBundle {
                 projection: Perspective(PerspectiveProjection {
@@ -246,15 +248,17 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                     ..default()
                 },
                 ..default()
-            });
-            parent.spawn((
+            }) .insert(Name::new("Camera 3d player"));
+            parent
+            .spawn((
                 SceneBundle {
                     scene: _my_assets.player.clone_weak(),
                     transform: Transform::from_rotation(Quat::from_rotation_y(PI / 2.0)),
                     ..default()
                 },
-                PlayerModel,
-            ));
+                PlayerModel,))
+                .insert(Name::new("Asset player"))
+            ;
         })
         .with_children(|children| {
             children
@@ -264,5 +268,6 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                     global: Default::default(),
                 });
         })
-        .insert(Player {});
+        .insert(Player {})
+        .insert(Name::new("player collider"));
 }

@@ -48,7 +48,7 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 ..default()
             },
             UiHealth {},
-        ))
+        )).insert(Name::new("UIhealth setup"))
         .with_children(|parent| {
             parent
                 .spawn(NodeBundle {

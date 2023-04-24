@@ -147,6 +147,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .insert(RigidBody::Dynamic)
         .insert(Collider::cuboid(0.1, 0.1, 0.1))
         .insert(Mob {})
+        .insert(Name::new("slime mob"))
         .with_children(|parent| {
             parent.spawn((
                 Aggro::new(75.0, 2.0),

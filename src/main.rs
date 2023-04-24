@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PresentMode};
 use bevy_asset_loader::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_rapier3d::prelude::*;
@@ -33,7 +33,7 @@ fn main() {
         .add_system(transition_to_game_state)
         .add_system(transition_to_main_menu_state)
         .add_system(transition_to_options_state)
-        .add_system(exit_game)
+        //.add_system(exit_game)
         .run();
 }
 
@@ -58,6 +58,8 @@ pub struct MyAssets {
     player: Handle<Scene>,
     #[asset(path = "purple-sword.gltf#Scene0")]
     sword: Handle<Scene>,
+    #[asset(path = "slime.gltf#Scene0")]
+    slime: Handle<Scene>,
     #[asset(path = "mereo.gltf#Animation0")]
     player_animation_hit: Handle<AnimationClip>,
     #[asset(path = "mereo.gltf#Animation2")]

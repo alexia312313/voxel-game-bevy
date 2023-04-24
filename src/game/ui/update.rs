@@ -21,7 +21,6 @@ pub fn update_health_text(mut text_query: Query<&mut Text, With<HealthText>>, he
 }
 
 // testing
-
 pub fn add_score_health(
     mut score: ResMut<Score>,
     mut health: ResMut<Health>,
@@ -29,8 +28,8 @@ pub fn add_score_health(
 ) {
     //testing
     if keyboard_input.just_pressed(KeyCode::Q) {
-        println!("Health: {:?}", health.value.to_string());
-        println!("Score: {:?}", score.value.to_string());
+        //println!("Health: {:?}", health.value.to_string());
+        //println!("Score: {:?}", score.value.to_string());
         //working lol idk why red its not private
         health.value += 1;
         score.value += 1;

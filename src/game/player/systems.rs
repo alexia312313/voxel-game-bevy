@@ -228,6 +228,24 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         _my_assets.player_animation_idle.clone_weak(),
     ]));
 
+    commands
+        .spawn(SceneBundle {
+            scene: _my_assets.slime.clone_weak(),
+            transform: Transform::from_rotation(Quat::from_rotation_y(PI / 2.0)),
+            ..default()
+        })
+        .insert(RigidBody::Dynamic)
+        .insert(GravityScale(1.0))
+        .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
+        .with_children(|children| {
+            children
+                .spawn(Collider::cuboid(0.2, 0.2, 0.2))
+                .insert(TransformBundle {
+                    local: Transform::from_xyz(0.0, 0.3, 0.0),
+                    global: Default::default(),
+                });
+        });
+
     commands.spawn(PlayerController::default());
     commands
         .spawn(SceneBundle { ..default() })
@@ -243,7 +261,10 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                 }),
                 transform: Transform::from_xyz(0.0, 1.4, 0.8)
                     .with_rotation(Quat::from_rotation_x(-0.5)),
-                     camera:Camera { order: (1), ..default() },
+                camera: Camera {
+                    order: (1),
+                    ..default()
+                },
                 ..default()
             });
             parent.spawn((

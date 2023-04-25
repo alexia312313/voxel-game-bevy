@@ -1,14 +1,13 @@
 use bevy::prelude::*;
 
 use super::{
-    mob::plugin::MobPlugin,
-    player::plugin::PlayerPlugin,  
-    ui::plugin::UiPlugin,
-    world::plugin::WorldPlugin,
+    mob::plugin::MobPlugin, player::plugin::PlayerPlugin, systems::link_animations,
+    ui::plugin::UiPlugin, world::plugin::WorldPlugin,
 };
 
 use big_brain::BigBrainPlugin;
 
+use crate::AppState;
 
 pub struct GamePlugin;
 
@@ -24,7 +23,7 @@ impl Plugin for GamePlugin {
             .add_plugin(MobPlugin)
             .add_plugin(PlayerPlugin)
             .add_plugin(UiPlugin)
-
+            .add_system(link_animations.in_set(OnUpdate(AppState::Game)))
             //external plugin
             .add_plugin(BigBrainPlugin);
 

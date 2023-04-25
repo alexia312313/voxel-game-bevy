@@ -1,19 +1,12 @@
-use crate::game::player::components::AnimationEntityLink;
+use crate::game::resources::AnimationEntityLink;
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::{Collider, RigidBody};
 use big_brain::prelude::*;
 
-use crate::game::player::resources::Animations;
+use super::components::*;
+use super::resources::*;
+
 use crate::{game::player::components::Player, MyAssets};
-
-#[derive(Component)]
-pub struct Mob {}
-
-#[derive(Component, Debug)]
-pub struct Aggro {
-    pub per_second: f32,
-    pub aggro: f32,
-}
 
 impl Aggro {
     pub fn new(aggro: f32, per_second: f32) -> Self {
@@ -29,12 +22,6 @@ pub fn aggro_system(time: Res<Time>, mut aggros: Query<&mut Aggro>) {
         }
         trace!("Aggro: {}", aggro.aggro);
     }
-}
-
-#[derive(Clone, Component, Debug, ActionBuilder)]
-pub struct Attack {
-    until: f32,
-    per_second: f32,
 }
 
 pub fn aggro_action_system(
@@ -80,8 +67,6 @@ pub fn aggro_action_system(
     }
 }
 
-#[derive(Clone, Component, Debug, ScorerBuilder)]
-pub struct Aggroed;
 // Looks familiar? It's a lot like Actions!
 pub fn aggro_scorer_system(
     aggros: Query<&Aggro>,
@@ -91,13 +76,13 @@ pub fn aggro_scorer_system(
     time: Res<Time>,
     mut animation_players: Query<&mut AnimationPlayer>,
     mut animation_link: Query<&AnimationEntityLink>,
-    animations: Res<Animations>,
+    animations: Res<MobAnimations>,
     // Same dance with the Actor here, but now we use look up Score instead of ActionState.
     mut query: Query<(&Actor, &mut Score, &ScorerSpan), With<Aggroed>>,
     mut done: Local<bool>,
 ) {
     let mut index = 0;
-    for animation_entity in query.iter_mut() {
+    for animation_entity in animation_link.iter_mut() {
         index += 1;
         if index == 2 {
             if let Ok(mut player_animation) = animation_players.get_mut(animation_entity.0) {
@@ -147,16 +132,15 @@ pub fn aggro_scorer_system(
                                                 player_animation
                                                     .play(animations.0[0].clone_weak())
                                                     .repeat();
-
                                                 *done = true;
                                             }
                                         } else {
-                                            player_animation.stop_repeating();
+                                            //player_animation.stop_repeating();
                                             *done = false;
                                         }
 
                                         trans_mob.translation +=
-                                            direction * 3.0 * time.delta_seconds();
+                                            direction * 1.0 * time.delta_seconds();
                                     }
                                 }
                             });
@@ -169,14 +153,14 @@ pub fn aggro_scorer_system(
 }
 
 pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
-    commands.insert_resource(Animations(vec![_my_assets
+    commands.insert_resource(MobAnimations(vec![_my_assets
         .slime_animation_walking
         .clone_weak()]));
 
     commands
         .spawn(SceneBundle {
             scene: _my_assets.slime.clone_weak(),
-            transform: Transform::from_xyz(0.0, 5.0, 0.0),
+            transform: Transform::from_xyz(5.0, 5.0, 0.0),
             ..default()
         })
         .insert(RigidBody::Dynamic)

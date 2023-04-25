@@ -1,6 +1,6 @@
 use super::components::*;
-
 use super::resources::*;
+use crate::game::resources::AnimationEntityLink;
 use crate::MyAssets;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
@@ -87,9 +87,9 @@ pub fn move_player(
                                     if keyboard_input.pressed(KeyCode::W) {
                                         transform.rotation = Quat::from_rotation_y(PI / 2.0);
                                     }
-                                }
-                                if keyboard_input.pressed(KeyCode::S) {
-                                    transform.rotation = Quat::from_rotation_y(-PI / 2.0);
+                                    if keyboard_input.pressed(KeyCode::S) {
+                                        transform.rotation = Quat::from_rotation_y(-PI / 2.0);
+                                    }
                                 }
                             }
                         }
@@ -159,37 +159,26 @@ pub fn rotate_camera(
     }
 }
 
-pub fn link_animations(
-    player_query: Query<Entity, Added<AnimationPlayer>>,
-    parent_query: Query<&Parent>,
-    animations_entity_link_query: Query<&AnimationEntityLink>,
-    mut commands: Commands,
+pub fn change_cam(
+    keyboard_input: Res<Input<KeyCode>>,
+    player_query: Query<Entity, With<Player>>,
+    mut transforms: Query<&mut Transform>,
+    children: Query<&Children>,
+    camera: Query<&Camera3d>,
 ) {
-    // Get all the Animation players which can be deep and hidden in the heirachy
-    for entity in player_query.iter() {
-        let top_entity = get_top_parent(entity, &parent_query);
-
-        // If the top parent has an animation config ref then link the player to the config
-        if animations_entity_link_query.get(top_entity).is_ok() {
-            warn!("Problem with multiple animationsplayers for the same top parent");
-        } else {
-            commands
-                .entity(top_entity)
-                .insert(AnimationEntityLink(entity.clone()));
+    for player in player_query.iter() {
+        if keyboard_input.pressed(KeyCode::F5) {
+            if let Ok(child_entities) = children.get(player) {
+                for child_entity in child_entities.iter() {
+                    if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                        if camera.get(*child_entity).is_ok() {
+                            transform.translation = Vec3::new(18.0, 18.0, 18.0);
+                        }
+                    }
+                }
+            }
         }
     }
-}
-
-fn get_top_parent(mut curr_entity: Entity, parent_query: &Query<&Parent>) -> Entity {
-    //Loop up all the way to the top parent
-    loop {
-        if let Ok(parent) = parent_query.get(curr_entity) {
-            curr_entity = parent.get();
-        } else {
-            break;
-        }
-    }
-    curr_entity
 }
 
 pub fn equip_weapon(

@@ -13,13 +13,15 @@ pub fn spawn_settings_menu(
 
     let window = window_query.get_single().unwrap();
 
-    commands.spawn((
-        Camera2dBundle {
-            transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
-            ..default()
-        },
-        CameraMenu {},
-    )).insert(Name::new("Menu camera settings 2d"));
+    commands
+        .spawn((
+            Camera2dBundle {
+                transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
+                ..default()
+            },
+            CameraMenu {},
+        ))
+        .insert(Name::new("Menu camera settings 2d"));
 }
 
 pub fn despawn_settings_menu(
@@ -35,7 +37,6 @@ pub fn despawn_settings_menu(
         commands.entity(camera_entity).despawn();
     }
 }
-
 
 pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServer>) -> Entity {
     let settings_menu_entity = commands

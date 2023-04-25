@@ -9,7 +9,6 @@ pub const UI: Style = Style {
     ..Style::DEFAULT
 };
 
-
 pub const HEALTH_STYLE: Style = Style {
     display: Display::Flex,
     flex_direction: FlexDirection::Row,
@@ -19,7 +18,6 @@ pub const HEALTH_STYLE: Style = Style {
     margin: UiRect::new(Val::Px(32.0), Val::Px(0.0), Val::Px(0.0), Val::Px(0.0)),
     ..Style::DEFAULT
 };
-
 
 pub const SCORE_STYLE: Style = Style {
     display: Display::Flex,

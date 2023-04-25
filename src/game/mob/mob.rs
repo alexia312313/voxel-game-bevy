@@ -1,7 +1,9 @@
+use crate::game::player::components::AnimationEntityLink;
 use bevy::prelude::*;
-use bevy_rapier3d::prelude::{RigidBody, Collider};
+use bevy_rapier3d::prelude::{Collider, RigidBody};
 use big_brain::prelude::*;
 
+use crate::game::player::resources::Animations;
 use crate::{game::player::components::Player, MyAssets};
 
 #[derive(Component)]
@@ -87,57 +89,90 @@ pub fn aggro_scorer_system(
     player: Query<Entity, With<Player>>,
     mut transforms: Query<&mut Transform>,
     time: Res<Time>,
+    mut animation_players: Query<&mut AnimationPlayer>,
+    mut animation_link: Query<&AnimationEntityLink>,
+    animations: Res<Animations>,
     // Same dance with the Actor here, but now we use look up Score instead of ActionState.
     mut query: Query<(&Actor, &mut Score, &ScorerSpan), With<Aggroed>>,
+    mut done: Local<bool>,
 ) {
-    for (Actor(actor), mut score, span) in &mut query {
-        if let Ok(aggro) = aggros.get(*actor) {
-            // This is really what the job of a Scorer is. To calculate a
-            // generic "Utility" score that the Big Brain engine will compare
-            // against others, over time, and use to make decisions. This is
-            // generally "the higher the better", and "first across the finish
-            // line", but that's all configurable using Pickers!
-            //
-            // The score here must be between 0.0 and 1.0.
-            score.set(aggro.aggro / 100.0);
-            if aggro.aggro >= 80.0 {
-                span.span().in_scope(|| {
-                    //print!("{:?}" , mobs);
-                    let mut player_pos = Vec3::ZERO;
-                    if let Ok(creature) = player.get_single() {
-                        if let Ok(trans_player) = transforms.get(creature) {
-                            player_pos = trans_player.translation
+    let mut index = 0;
+    for animation_entity in query.iter_mut() {
+        index += 1;
+        if index == 2 {
+            if let Ok(mut player_animation) = animation_players.get_mut(animation_entity.0) {
+                for (Actor(actor), mut score, span) in &mut query {
+                    if let Ok(aggro) = aggros.get(*actor) {
+                        // This is really what the job of a Scorer is. To calculate a
+                        // generic "Utility" score that the Big Brain engine will compare
+                        // against others, over time, and use to make decisions. This is
+                        // generally "the higher the better", and "first across the finish
+                        // line", but that's all configurable using Pickers!
+                        //
+                        // The score here must be between 0.0 and 1.0.
+                        // We'll just use the aggro value directly.
+                        score.set(aggro.aggro / 100.0);
+                        if aggro.aggro >= 80.0 {
+                            span.span().in_scope(|| {
+                                //print!("{:?}" , mobs);
+                                let mut player_pos = Vec3::ZERO;
+                                if let Ok(creature) = player.get_single() {
+                                    if let Ok(trans_player) = transforms.get(creature) {
+                                        player_pos = trans_player.translation
+                                    }
+                                }
+                                for mob in mobs.iter() {
+                                    let mut direction = Vec3::ZERO;
+                                    if let Ok(mut trans_mob) = transforms.get_mut(mob) {
+                                        if player_pos.z < trans_mob.translation.z {
+                                            direction -= Vec3::new(0.0, 0.0, 0.1);
+                                        }
+                                        if player_pos.z > trans_mob.translation.z {
+                                            direction += Vec3::new(0.0, 0.0, 0.1);
+                                        }
+                                        if player_pos.x < trans_mob.translation.x {
+                                            direction -= Vec3::new(0.1, 0.0, 0.0);
+                                        }
+                                        if player_pos.x > trans_mob.translation.x {
+                                            direction += Vec3::new(0.1, 0.0, 0.0);
+                                        }
+                                        //if player_pos.y<trans_mob.translation.y{
+                                        //    direction+=Vec3::new(0.0,0.1,0.0);
+                                        //}
+                                        //print!("{:?}", direction);
+
+                                        if direction.length() > 0.0 {
+                                            direction = direction.normalize();
+                                            if !*done {
+                                                player_animation
+                                                    .play(animations.0[0].clone_weak())
+                                                    .repeat();
+
+                                                *done = true;
+                                            }
+                                        } else {
+                                            player_animation.stop_repeating();
+                                            *done = false;
+                                        }
+
+                                        trans_mob.translation +=
+                                            direction * 3.0 * time.delta_seconds();
+                                    }
+                                }
+                            });
                         }
                     }
-                    for mob in mobs.iter() {
-                        let mut direction = Vec3::ZERO;
-                        if let Ok(mut trans_mob) = transforms.get_mut(mob) {
-                            if player_pos.z < trans_mob.translation.z {
-                                direction -= Vec3::new(0.0, 0.0, 0.1);
-                            }
-                            if player_pos.z > trans_mob.translation.z {
-                                direction += Vec3::new(0.0, 0.0, 0.1);
-                            }
-                            if player_pos.x < trans_mob.translation.x {
-                                direction -= Vec3::new(0.1, 0.0, 0.0);
-                            }
-                            if player_pos.x > trans_mob.translation.x {
-                                direction += Vec3::new(0.1, 0.0, 0.0);
-                            }
-                            //if player_pos.y<trans_mob.translation.y{
-                            //    direction+=Vec3::new(0.0,0.1,0.0);
-                            //}
-                            //print!("{:?}", direction);
-                            trans_mob.translation += direction * 10.0 * time.delta_seconds();
-                        }
-                    }
-                });
+                }
             }
         }
     }
 }
 
 pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
+    commands.insert_resource(Animations(vec![_my_assets
+        .slime_animation_walking
+        .clone_weak()]));
+
     commands
         .spawn(SceneBundle {
             scene: _my_assets.slime.clone_weak(),

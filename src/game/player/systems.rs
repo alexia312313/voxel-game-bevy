@@ -2,9 +2,7 @@ use super::components::*;
 
 use super::resources::*;
 use crate::MyAssets;
-use bevy::render::camera;
 use bevy::render::camera::Projection::Perspective;
-use bevy::transform;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
@@ -22,69 +20,73 @@ pub fn move_player(
     time: Res<Time>,
     mut done: Local<bool>,
 ) {
+    let mut index = 0;
     for animation_entity in query.iter_mut() {
-        if let Ok(mut player_animation) = animation_players.get_mut(animation_entity.0) {
-            for player in player_query.iter() {
-                if let Ok(mut transform) = transforms.get_mut(player) {
-                    if mouse_input.pressed(MouseButton::Left) {
-                        player_animation.play(animations.0[0].clone_weak());
-                    } else {
-                        let mut jump = Vec3::ZERO;
-                        let mut direction = Vec3::ZERO;
-                        let tr = transform.right();
-                        let tf = transform.forward();
-
-                        if keyboard_input.pressed(KeyCode::A) {
-                            direction -= Vec3::new(tr.x, 0.0, tr.z);
-                        }
-                        if keyboard_input.pressed(KeyCode::D) {
-                            direction += Vec3::new(tr.x, 0.0, tr.z);
-                        }
-                        if keyboard_input.pressed(KeyCode::W) {
-                            direction += Vec3::new(tf.x, 0.0, tf.z);
-                        }
-                        if keyboard_input.pressed(KeyCode::S) {
-                            direction -= Vec3::new(tf.x, 0.0, tf.z);
-                        }
-
-                        if keyboard_input.pressed(KeyCode::Space) {
-                            jump += Vec3::new(0.0, 2.0, 0.0);
-                            //println!("jump");
-                        }
-
-                        if direction.length() > 0.0 {
-                            direction = direction.normalize();
-                            if !*done {
-                                player_animation.play(animations.0[1].clone_weak()).repeat();
-
-                                *done = true;
-                            }
+        index += 1;
+        if index == 1 {
+            if let Ok(mut player_animation) = animation_players.get_mut(animation_entity.0) {
+                for player in player_query.iter() {
+                    if let Ok(mut transform) = transforms.get_mut(player) {
+                        if mouse_input.pressed(MouseButton::Left) {
+                            player_animation.play(animations.0[0].clone_weak());
                         } else {
-                            player_animation
-                                .play(animations.0[2].clone_weak())
-                                .set_speed(0.1)
-                                .repeat();
+                            let mut jump = Vec3::ZERO;
+                            let mut direction = Vec3::ZERO;
+                            let tr = transform.right();
+                            let tf = transform.forward();
 
-                            *done = false;
+                            if keyboard_input.pressed(KeyCode::A) {
+                                direction -= Vec3::new(tr.x, 0.0, tr.z);
+                            }
+                            if keyboard_input.pressed(KeyCode::D) {
+                                direction += Vec3::new(tr.x, 0.0, tr.z);
+                            }
+                            if keyboard_input.pressed(KeyCode::W) {
+                                direction += Vec3::new(tf.x, 0.0, tf.z);
+                            }
+                            if keyboard_input.pressed(KeyCode::S) {
+                                direction -= Vec3::new(tf.x, 0.0, tf.z);
+                            }
+
+                            if keyboard_input.pressed(KeyCode::Space) {
+                                jump += Vec3::new(0.0, 2.0, 0.0);
+                                //println!("jump");
+                            }
+
+                            if direction.length() > 0.0 {
+                                direction = direction.normalize();
+                                if !*done {
+                                    player_animation.play(animations.0[1].clone_weak()).repeat();
+
+                                    *done = true;
+                                }
+                            } else {
+                                player_animation
+                                    .play(animations.0[2].clone_weak())
+                                    .set_speed(0.1)
+                                    .repeat();
+
+                                *done = false;
+                            }
+
+                            transform.translation += direction * 3.0 * time.delta_seconds();
+                            transform.translation += jump * 3.0 * time.delta_seconds();
                         }
-
-                        transform.translation += direction * 3.0 * time.delta_seconds();
-                        transform.translation += jump * 3.0 * time.delta_seconds();
                     }
-                }
 
-                if let Ok(child_entities) = children.get(player) {
-                    for child_entity in child_entities.iter() {
-                        if let Ok(mut transform) = transforms.get_mut(*child_entity) {
-                            if model.get(*child_entity).is_ok() {
-                                if keyboard_input.pressed(KeyCode::A) {
-                                    transform.rotation = Quat::from_rotation_y(PI);
-                                }
-                                if keyboard_input.pressed(KeyCode::D) {
-                                    transform.rotation = Quat::from_rotation_y(0.0);
-                                }
-                                if keyboard_input.pressed(KeyCode::W) {
-                                    transform.rotation = Quat::from_rotation_y(PI / 2.0);
+                    if let Ok(child_entities) = children.get(player) {
+                        for child_entity in child_entities.iter() {
+                            if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                                if model.get(*child_entity).is_ok() {
+                                    if keyboard_input.pressed(KeyCode::A) {
+                                        transform.rotation = Quat::from_rotation_y(PI);
+                                    }
+                                    if keyboard_input.pressed(KeyCode::D) {
+                                        transform.rotation = Quat::from_rotation_y(0.0);
+                                    }
+                                    if keyboard_input.pressed(KeyCode::W) {
+                                        transform.rotation = Quat::from_rotation_y(PI / 2.0);
+                                    }
                                 }
                                 if keyboard_input.pressed(KeyCode::S) {
                                     transform.rotation = Quat::from_rotation_y(-PI / 2.0);
@@ -106,8 +108,6 @@ pub fn rotate_camera(
     mut transforms: Query<&mut Transform>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
     time: Res<Time>,
-    children: Query<&Children>,
-    camera: Query<&Camera3d>,
 ) {
     let mut delta: Vec2 = Vec2::ZERO;
     let mut controller = controller_query.single_mut();
@@ -143,28 +143,18 @@ pub fn rotate_camera(
                 controller.yaw = Quat::from_rotation_y(-delta.x * 0.05);
                 transform.rotation = controller.yaw * transform.rotation;
             }
-        }
-    }
-}
-
-pub fn change_cam(
-    keyboard_input: Res<Input<KeyCode>>,
-    player_query: Query<Entity, With<Player>>,
-    mut transforms: Query<&mut Transform>,
-    children: Query<&Children>,
-    camera: Query<&Camera3d>,
-) {
-    for player in player_query.iter() {
-        if keyboard_input.pressed(KeyCode::F5) {
+            /* Pitch
             if let Ok(child_entities) = children.get(player) {
                 for child_entity in child_entities.iter() {
                     if let Ok(mut transform) = transforms.get_mut(*child_entity) {
                         if camera.get(*child_entity).is_ok() {
-                            transform.translation = Vec3::new(18.0, 18.0, 18.0);
+                            controller.pitch = Quat::from_rotation_x(-delta.y * 0.05);
+                            transform.rotation = transform.rotation * controller.pitch;
                         }
                     }
                 }
             }
+            */
         }
     }
 }

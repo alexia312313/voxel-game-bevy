@@ -15,14 +15,13 @@ mod systems;
 use systems::*;
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(WindowPlugin{
-            primary_window:Some(Window{
-                title:"Voxel game".into(),
-                mode:WindowMode::Fullscreen,
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "Voxel game".into(),
+                mode: WindowMode::Fullscreen,
                 ..default()
-
             }),
-           ..default()
+            ..default()
         }))
         .add_state::<AppState>()
         // Asset Loading
@@ -32,9 +31,8 @@ fn main() {
         )
         .add_collection_to_loading_state::<_, MyAssets>(GameState::AssetLoading)
         // Plugins
-     //   .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
+        //   .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-
         .add_plugin(RapierDebugRenderPlugin::default())
         .add_plugin(WorldInspectorPlugin::new())
         // My Plugins
@@ -77,4 +75,6 @@ pub struct MyAssets {
     player_animation_walking: Handle<AnimationClip>,
     #[asset(path = "mereo.gltf#Animation1")]
     player_animation_idle: Handle<AnimationClip>,
+    #[asset(path = "slime.gltf#Animation0")]
+    slime_animation_walking: Handle<AnimationClip>,
 }

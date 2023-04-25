@@ -35,7 +35,6 @@ pub fn move_player(
 
                         //I suspect diffents pcs will run this differently, should probably use a delta time 
 
-
                         if keyboard_input.pressed(KeyCode::A) {
                             direction -= Vec3::new(tr.x, 0.0, tr.z);
                         }
@@ -235,7 +234,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             .insert(Name::new("player controller"));
     commands
         .spawn(SceneBundle { ..default() })
-        .insert(RigidBody::KinematicVelocityBased)
+        .insert(RigidBody::Dynamic)
         .insert(GravityScale(1.0))
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .insert(Name::new("Player"))
@@ -268,6 +267,10 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .with_children(|children| {
             children
                 .spawn(Collider::cuboid(0.2, 0.5, 0.2))
+                .insert(KinematicCharacterController{
+                    translation: Some(Vec3::new(1.0,1.0,1.0)),
+                    ..default()
+                })
                 .insert(TransformBundle {
                     local: Transform::from_xyz(0.0, 0.6, 0.0),
                     global: Default::default(),
@@ -291,6 +294,7 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
             .insert(Transform::from_xyz(1.1,2.0,1.1))
             .insert(KinematicCharacterController{
                 offset:CharacterLength::Relative(0.1),
+                translation: Some(Vec3::new(1.0,1.0,1.0)),
                 ..default()
             });
     }
@@ -304,9 +308,9 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
         }
     }
 
-  pub  fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
+  pub fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
         for mut controller in controllers.iter_mut() {
-            controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
+          //  controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
         }
     }
 

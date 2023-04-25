@@ -47,7 +47,7 @@ pub fn move_player(
 
                         if keyboard_input.pressed(KeyCode::Space) {
                             jump += Vec3::new(0.0, 2.0, 0.0);
-                            println!("jump");
+                            //println!("jump");
                         }
 
                         if direction.length() > 0.0 {

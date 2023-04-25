@@ -141,7 +141,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
     commands
         .spawn(SceneBundle {
             scene: _my_assets.slime.clone_weak(),
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+            transform: Transform::from_xyz(0.0, 5.0, 0.0),
             ..default()
         })
         .insert(RigidBody::Dynamic)

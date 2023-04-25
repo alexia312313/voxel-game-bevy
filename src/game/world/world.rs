@@ -55,7 +55,7 @@ pub fn setup(
         .insert(Collider::ball(0.5))
         .insert(Name::new("Ball"))
         .insert(Restitution::coefficient(0.7))
-        .insert(TransformBundle::from_transform(Transform::from_xyz(0.0,1.0, 0.0)));
+        .insert(TransformBundle::from_transform(Transform::from_xyz(0.0,5.0, 0.0)));
 
 
 }

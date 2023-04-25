@@ -7,12 +7,6 @@ use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
 
-
-
-    
- 
-
-
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
     mouse_input: Res<Input<MouseButton>>,

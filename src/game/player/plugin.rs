@@ -21,7 +21,6 @@ impl Plugin for PlayerPlugin {
                 check_collider,
                 read_result_system,
                 update_system
-            
             ).in_set(OnUpdate(AppState::Game)),
             );
     }

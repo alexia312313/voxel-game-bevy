@@ -31,6 +31,10 @@ pub fn move_player(
                         let mut direction = Vec3::ZERO;
                         let tr = transform.right();
                         let tf = transform.forward();
+                        
+
+                        //I suspect diffents pcs will run this differently, should probably use a delta time 
+
 
                         if keyboard_input.pressed(KeyCode::A) {
                             direction -= Vec3::new(tr.x, 0.0, tr.z);
@@ -231,8 +235,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             .insert(Name::new("player controller"));
     commands
         .spawn(SceneBundle { ..default() })
-        .insert(RigidBody::Dynamic)
-        .insert(KinematicCharacterController::default())
+        .insert(RigidBody::KinematicVelocityBased)
         .insert(GravityScale(1.0))
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .insert(Name::new("Player"))
@@ -265,7 +268,6 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .with_children(|children| {
             children
                 .spawn(Collider::cuboid(0.2, 0.5, 0.2))
-                .insert(ActiveEvents::COLLISION_EVENTS)
                 .insert(TransformBundle {
                     local: Transform::from_xyz(0.0, 0.6, 0.0),
                     global: Default::default(),
@@ -294,13 +296,11 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
     }
 
  pub   fn read_result_system(
-    controllers: Query<(Entity, &KipownematicCharacterControllerOutput) >,
-    topfilter: Query<Entity, With<Children>>
-
+    controllers: Query<(Entity, &KinematicCharacterControllerOutput) >,
 ) {
         for (entity, output) in controllers.iter() {
-            println!("Entity {:?} Collitions with {:?} and touches the ground: {:?}",
-                      entity, output.collisions, output.grounded);
+            println!("Entity {:?} moved by {:?} and touches the ground: {:?}",
+                      entity, output.effective_translation, output.grounded);
         }
     }
 

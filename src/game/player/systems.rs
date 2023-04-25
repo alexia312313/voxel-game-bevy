@@ -2,7 +2,9 @@ use super::components::*;
 
 use super::resources::*;
 use crate::MyAssets;
+use bevy::render::camera;
 use bevy::render::camera::Projection::Perspective;
+use bevy::transform;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
@@ -104,6 +106,8 @@ pub fn rotate_camera(
     mut transforms: Query<&mut Transform>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
     time: Res<Time>,
+    children: Query<&Children>,
+    camera: Query<&Camera3d>,
 ) {
     let mut delta: Vec2 = Vec2::ZERO;
     let mut controller = controller_query.single_mut();
@@ -139,18 +143,28 @@ pub fn rotate_camera(
                 controller.yaw = Quat::from_rotation_y(-delta.x * 0.05);
                 transform.rotation = controller.yaw * transform.rotation;
             }
-            /* Pitch
+        }
+    }
+}
+
+pub fn change_cam(
+    keyboard_input: Res<Input<KeyCode>>,
+    player_query: Query<Entity, With<Player>>,
+    mut transforms: Query<&mut Transform>,
+    children: Query<&Children>,
+    camera: Query<&Camera3d>,
+) {
+    for player in player_query.iter() {
+        if keyboard_input.pressed(KeyCode::F5) {
             if let Ok(child_entities) = children.get(player) {
                 for child_entity in child_entities.iter() {
                     if let Ok(mut transform) = transforms.get_mut(*child_entity) {
                         if camera.get(*child_entity).is_ok() {
-                            controller.pitch = Quat::from_rotation_x(-delta.y * 0.05);
-                            transform.rotation = transform.rotation * controller.pitch;
+                            transform.translation = Vec3::new(18.0, 18.0, 18.0);
                         }
                     }
                 }
             }
-            */
         }
     }
 }
@@ -204,16 +218,17 @@ pub fn equip_weapon(
             index += 1;
             if index == 4 {
                 commands.entity(child).with_children(|parent| {
-                    parent.spawn((
-                        SceneBundle {
-                            scene: _my_assets.sword.clone_weak(),
-                            transform: Transform::from_xyz(0.0, -0.8, -0.2)
-                                .with_rotation(Quat::from_rotation_y(-0.2)),
-                            ..default()
-                        },
-                        WeaponModel {},
-
-                    )).insert(Name::new("Weapon model"));
+                    parent
+                        .spawn((
+                            SceneBundle {
+                                scene: _my_assets.sword.clone_weak(),
+                                transform: Transform::from_xyz(0.0, -0.8, -0.2)
+                                    .with_rotation(Quat::from_rotation_y(-0.2)),
+                                ..default()
+                            },
+                            WeaponModel {},
+                        ))
+                        .insert(Name::new("Weapon model"));
                 });
             }
         }
@@ -227,8 +242,9 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         _my_assets.player_animation_idle.clone_weak(),
     ]));
 
-    commands.spawn(PlayerController::default())
-            .insert(Name::new("player controller"));
+    commands
+        .spawn(PlayerController::default())
+        .insert(Name::new("player controller"));
     commands
         .spawn(SceneBundle { ..default() })
         .insert(RigidBody::Dynamic)
@@ -236,30 +252,32 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .insert(Name::new("Player"))
         .with_children(|parent| {
-            parent.spawn(Camera3dBundle {
-                projection: Perspective(PerspectiveProjection {
-                    fov: PI / 2.,
-                    far: 2048.0,
-                    ..default()
-                }),
-                transform: Transform::from_xyz(0.0, 1.4, 0.8)
-                    .with_rotation(Quat::from_rotation_x(-0.5)),
-                camera: Camera {
-                    order: (1),
-                    ..default()
-                },
-                ..default()
-            }) .insert(Name::new("Camera 3d player"));
             parent
-            .spawn((
-                SceneBundle {
-                    scene: _my_assets.player.clone_weak(),
-                    transform: Transform::from_rotation(Quat::from_rotation_y(PI / 2.0)),
+                .spawn(Camera3dBundle {
+                    projection: Perspective(PerspectiveProjection {
+                        fov: PI / 2.,
+                        far: 2048.0,
+                        ..default()
+                    }),
+                    transform: Transform::from_xyz(0.0, 1.4, 0.8)
+                        .with_rotation(Quat::from_rotation_x(-0.5)),
+                    camera: Camera {
+                        order: (1),
+                        ..default()
+                    },
                     ..default()
-                },
-                PlayerModel,))
-                .insert(Name::new("Asset player"))
-            ;
+                })
+                .insert(Name::new("Camera 3d player"));
+            parent
+                .spawn((
+                    SceneBundle {
+                        scene: _my_assets.player.clone_weak(),
+                        transform: Transform::from_rotation(Quat::from_rotation_y(PI / 2.0)),
+                        ..default()
+                    },
+                    PlayerModel,
+                ))
+                .insert(Name::new("Asset player"));
         })
         .with_children(|children| {
             children
@@ -274,28 +292,30 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .insert(Name::new("player collider"));
 }
 
-
 pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
-    for active_event in collider.iter_mut(){
-        println!("{:?}",active_event);
-        } 
+    for active_event in collider.iter_mut() {
+        println!("{:?}", active_event);
     }
+}
 
-  pub  fn init_system(mut commands: Commands) {
-        commands.spawn(RigidBody::KinematicPositionBased)
-            .insert(Collider::ball(0.5))
-            .insert(KinematicCharacterController::default());
-    }
+pub fn init_system(mut commands: Commands) {
+    commands
+        .spawn(RigidBody::KinematicPositionBased)
+        .insert(Collider::ball(0.5))
+        .insert(KinematicCharacterController::default());
+}
 
- pub   fn read_result_system(controllers: Query<(Entity, &KinematicCharacterControllerOutput)>) {
-        for (entity, output) in controllers.iter() {
-            println!("Entity {:?} moved by {:?} and touches the ground: {:?}",
-                      entity, output.effective_translation, output.grounded);
-        }
+pub fn read_result_system(controllers: Query<(Entity, &KinematicCharacterControllerOutput)>) {
+    for (entity, output) in controllers.iter() {
+        println!(
+            "Entity {:?} moved by {:?} and touches the ground: {:?}",
+            entity, output.effective_translation, output.grounded
+        );
     }
+}
 
-  pub  fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
-        for mut controller in controllers.iter_mut() {
-            controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
-        }
+pub fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
+    for mut controller in controllers.iter_mut() {
+        controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
     }
+}

@@ -231,7 +231,8 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             .insert(Name::new("player controller"));
     commands
         .spawn(SceneBundle { ..default() })
-        .insert(RigidBody::Dynamic)
+        .insert(RigidBody::KinematicVelocityBased)
+        .insert(KinematicCharacterController::default())
         .insert(GravityScale(1.0))
         .insert(LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z)
         .insert(Name::new("Player"))
@@ -284,7 +285,10 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
   pub  fn init_system(mut commands: Commands) {
         commands.spawn(RigidBody::KinematicPositionBased)
             .insert(Collider::ball(0.5))
-            .insert(KinematicCharacterController::default());
+            .insert(KinematicCharacterController{
+                offset:CharacterLength::Relative(0.1),
+                ..default()
+            });
     }
 
  pub   fn read_result_system(controllers: Query<(Entity, &KinematicCharacterControllerOutput)>) {
@@ -297,5 +301,13 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
   pub  fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
         for mut controller in controllers.iter_mut() {
             controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
+        }
+    }
+
+    fn modify_character_controller_slopes(mut character_controller_outputs: Query<&mut KinematicCharacterControllerOutput>) {
+        for mut output in outputs.iter_mut() {
+            for collision in &output.collisions {
+                // Do something with that collision information.
+            }
         }
     }

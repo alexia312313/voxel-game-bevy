@@ -20,7 +20,6 @@ fn main() {
                 title:"Voxel game".into(),
                 mode:WindowMode::Fullscreen,
                 ..default()
-
             }),
            ..default()
         }))

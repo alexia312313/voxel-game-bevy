@@ -332,13 +332,14 @@ pub fn display_events(
 
 pub fn lose_health(
     mut health: ResMut<Health>,
-    mob: Query<&Mob>,
+    mob: Query<Entity,With<Mob>>,
     mut collision_events: EventReader<CollisionEvent>,
 
 ){
     for collision_event in collision_events.iter() {
      
-       if mob {
+       if let ref Entity = mob 
+        {
         health.value -=1
        }
         

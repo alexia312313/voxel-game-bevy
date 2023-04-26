@@ -2,6 +2,8 @@ use super::components::*;
 
 use super::resources::*;
 use crate::MyAssets;
+use crate::game::mob::mob::Mob;
+use crate::game::resources::Health;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
@@ -271,6 +273,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                     translation: Some(Vec3::new(1.0,1.0,1.0)),
                     ..default()
                 })
+                .insert(ActiveEvents::COLLISION_EVENTS)
                 .insert(TransformBundle {
                     local: Transform::from_xyz(0.0, 0.6, 0.0),
                     global: Default::default(),
@@ -314,4 +317,32 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
         }
     }
 
-   
+pub fn display_events(
+    mut collision_events: EventReader<CollisionEvent>,
+    mut contact_force_events: EventReader<ContactForceEvent>,
+) {
+    for collision_event in collision_events.iter() {
+        println!("Received collision event: {:?}", collision_event);
+    }
+
+    for contact_force_event in contact_force_events.iter() {
+        println!("Received contact force event: {:?}", contact_force_event);
+    }
+}
+
+pub fn lose_health(
+    mut health: ResMut<Health>,
+    mob: Query<&Mob>,
+    mut collision_events: EventReader<CollisionEvent>,
+
+){
+    for collision_event in collision_events.iter() {
+     
+       if mob {
+        health.value -=1
+       }
+        
+       
+    }
+
+    }

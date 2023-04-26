@@ -31,7 +31,7 @@ pub fn add_score_health(
         //println!("Health: {:?}", health.value.to_string());
         //println!("Score: {:?}", score.value.to_string());
         //working lol idk why red its not private
-        health.value += 1;
+        health.value -= 1;
         score.value += 1;
     }
 }

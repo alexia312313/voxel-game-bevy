@@ -19,8 +19,10 @@ impl Plugin for PlayerPlugin {
                 link_animations, 
                 equip_weapon,
                 check_collider,
-                read_result_system,
-                update_system
+              //  read_result_system,
+                update_system,
+               // display_events, 
+              lose_health,
             ).in_set(OnUpdate(AppState::Game)),
             );
     }

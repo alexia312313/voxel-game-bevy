@@ -8,7 +8,7 @@ pub struct Health{
 impl Default for Health{
     fn default()-> Health{
         Health{
-            value:3
+            value:10000
         }
     }
 }

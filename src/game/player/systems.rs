@@ -1,7 +1,9 @@
 use super::components::*;
 use super::resources::*;
 use crate::game::resources::AnimationEntityLink;
+use crate::CamState;
 use crate::MyAssets;
+use bevy::ecs::system::Insert;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
@@ -165,14 +167,34 @@ pub fn change_cam(
     mut transforms: Query<&mut Transform>,
     children: Query<&Children>,
     camera: Query<&Camera3d>,
+    cam_state: Res<State<CamState>>,
+    mut cam_state_next_state: ResMut<NextState<CamState>>,
 ) {
     for player in player_query.iter() {
-        if keyboard_input.pressed(KeyCode::F5) {
-            if let Ok(child_entities) = children.get(player) {
-                for child_entity in child_entities.iter() {
-                    if let Ok(mut transform) = transforms.get_mut(*child_entity) {
-                        if camera.get(*child_entity).is_ok() {
-                            transform.translation = Vec3::new(18.0, 18.0, 18.0);
+        if keyboard_input.just_pressed(KeyCode::F5) {
+            if cam_state.0 == CamState::CamFirst {
+                println!("Entrem a cambi: {:?}", cam_state.0);
+                if let Ok(child_entities) = children.get(player) {
+                    for child_entity in child_entities.iter() {
+                        if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                            if camera.get(*child_entity).is_ok() {
+                                cam_state_next_state.set(CamState::CamThird);
+                                transform.translation = Vec3::new(1.5, 7.0, 4.5);
+                                println!("mode: {:?}", cam_state.0);
+                            }
+                        }
+                    }
+                }
+            } else if cam_state.0 == CamState::CamThird {
+                print!("Entrem a cambi: {:?}", cam_state.0);
+                if let Ok(child_entities) = children.get(player) {
+                    println!("Entrem a mode: {:?}", cam_state.0);
+                    for child_entity in child_entities.iter() {
+                        if let Ok(mut transform) = transforms.get_mut(*child_entity) {
+                            if camera.get(*child_entity).is_ok() {
+                                cam_state_next_state.set(CamState::CamFirst);
+                                transform.translation = Vec3::new(0.0, 1.4, 0.8);
+                            }
                         }
                     }
                 }
@@ -267,7 +289,7 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
                     global: Default::default(),
                 });
         })
-        .insert(Player {})
+        .insert(Player { mode: 1 })
         .insert(Name::new("player collider"));
 }
 

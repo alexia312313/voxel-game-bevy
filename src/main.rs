@@ -24,6 +24,7 @@ fn main() {
             ..default()
         }))
         .add_state::<AppState>()
+        .add_state::<CamState>()
         // Asset Loading
         .add_state::<GameState>()
         .add_loading_state(
@@ -52,6 +53,13 @@ pub enum AppState {
     MainMenu,
     Settings,
     Game,
+}
+
+#[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+pub enum CamState {
+    #[default]
+    CamFirst,
+    CamThird,
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]

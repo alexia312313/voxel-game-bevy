@@ -18,7 +18,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Voxel game".into(),
-                mode: WindowMode::Fullscreen,
+                mode: WindowMode::BorderlessFullscreen,
                 ..default()
             }),
             ..default()

@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use super::systems::*;
 
+
 use crate::AppState;
 pub struct PlayerPlugin;
 
@@ -22,7 +23,7 @@ impl Plugin for PlayerPlugin {
                     equip_weapon,
                     check_collider,
                     read_result_system,
-                    update_system,
+                   
                     lose_health,
                 )
                     .in_set(OnUpdate(AppState::Game)),

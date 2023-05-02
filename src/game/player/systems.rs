@@ -1,7 +1,7 @@
 use super::components::*;
 use super::resources::*;
 
-use crate::game::mob::mob::Mob;
+use crate::game::mob::components::Mob;
 use crate::game::resources::Health;
 
 use crate::game::resources::AnimationEntityLink;
@@ -364,11 +364,5 @@ pub fn read_result_system(controllers: Query<(Entity, &KinematicCharacterControl
             "Entity {:?} moved by {:?} and touches the ground: {:?}",
             entity, output.effective_translation, output.grounded
         );
-    }
-}
-
-pub fn update_system(mut controllers: Query<&mut KinematicCharacterController>) {
-    for mut controller in controllers.iter_mut() {
-        controller.translation = Some(Vec3::new(1.0, -0.5, 1.0));
     }
 }

@@ -23,6 +23,7 @@ impl Plugin for PlayerPlugin {
                     equip_weapon,
                    // check_collider,
                  //   read_result_system,
+
                     lose_health,
                     attack
                 )

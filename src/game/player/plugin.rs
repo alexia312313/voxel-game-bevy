@@ -10,7 +10,10 @@ impl Plugin for PlayerPlugin {
         app
             // On Enter State
             .add_system(setup.in_schedule(OnEnter(AppState::Game)))
+            .add_system(init_system.in_schedule(OnEnter(AppState::Game)))
+
             // Systems
+
             .add_systems(
                 (
                     move_player,
@@ -20,8 +23,10 @@ impl Plugin for PlayerPlugin {
                     check_collider,
                     read_result_system,
                     update_system,
+                    lose_health,
                 )
                     .in_set(OnUpdate(AppState::Game)),
+
             );
     }
 }

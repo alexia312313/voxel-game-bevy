@@ -1,7 +1,12 @@
 use super::components::*;
 use super::resources::*;
+
+use crate::game::mob::mob::Mob;
+use crate::game::resources::Health;
+
 use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
+
 use crate::MyAssets;
 use bevy::ecs::system::Insert;
 use bevy::render::camera::Projection::Perspective;
@@ -37,6 +42,9 @@ pub fn move_player(
                             let tr = transform.right();
                             let tf = transform.forward();
 
+
+                        //I suspect diffents pcs will run this differently, should probably use a delta time
+
                             if keyboard_input.pressed(KeyCode::A) {
                                 direction -= Vec3::new(tr.x, 0.0, tr.z);
                             }
@@ -49,6 +57,7 @@ pub fn move_player(
                             if keyboard_input.pressed(KeyCode::S) {
                                 direction -= Vec3::new(tf.x, 0.0, tf.z);
                             }
+
 
                             if keyboard_input.pressed(KeyCode::Space) {
                                 jump += Vec3::new(0.0, 2.0, 0.0);
@@ -283,6 +292,10 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         .with_children(|children| {
             children
                 .spawn(Collider::cuboid(0.2, 0.5, 0.2))
+                .insert(KinematicCharacterController {
+                    translation: Some(Vec3::new(1.0, 1.0, 1.0)),
+                    ..default()
+                })
                 .insert(ActiveEvents::COLLISION_EVENTS)
                 .insert(TransformBundle {
                     local: Transform::from_xyz(0.0, 0.6, 0.0),
@@ -296,6 +309,45 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
 pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
     for active_event in collider.iter_mut() {
         println!("{:?}", active_event);
+    }
+}
+
+
+
+pub fn lose_health(
+    mut health: ResMut<Health>,
+    mob: Query<&Mob>,
+    mut collision_events: EventReader<CollisionEvent>,
+) {
+    let mut contact_with_mob=false;
+
+    for (e1, e2) in collision_events
+        .iter()
+        .filter_map(|event| {
+            if let CollisionEvent::Started(e1, e2, _) = event {
+                Some([(e1, e2), (e2, e1)])
+            } else {
+                None
+            }
+        })
+        .flatten()
+    {
+        // is entity 2 a mob?
+        if let Ok(mob) = mob.get(*e2) {
+            print!("contactWithMob= true");
+            contact_with_mob= true;
+          
+        } else{
+            contact_with_mob=false;
+            print!("contactWithMob= false")
+        }
+
+        if contact_with_mob==true {           
+                health.value -= 1;
+                print!("lose health")
+        }
+
+
     }
 }
 

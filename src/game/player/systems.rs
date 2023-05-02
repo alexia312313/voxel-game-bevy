@@ -15,8 +15,16 @@ use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
 
-
-
+pub fn attack(
+    mouse_input: Res<Input<MouseButton>>,
+    mut mob_health: ResMut<MobHealth>,
+    commands:  Commands,
+    mob_query: Query<Entity, With<Mob>>, 
+){
+    if mouse_input.pressed(MouseButton::Left) {
+        mob_lose_health(mob_health, commands, mob_query)
+    }
+}
 
 
 pub fn move_player(
@@ -331,7 +339,6 @@ pub fn lose_health(
     mob: Query<&Mob>,
     mut collision_events: EventReader<CollisionEvent>,
 ) {
-    let mut contact_with_mob=false;
 
     for (e1, e2) in collision_events
         .iter()
@@ -344,6 +351,8 @@ pub fn lose_health(
         })
         .flatten()
     {
+        let contact_with_mob:bool;
+
         // is entity 2 a mob?
         if let Ok(mob) = mob.get(*e2) {
             print!("contactWithMob= true");

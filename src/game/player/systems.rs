@@ -2,17 +2,22 @@ use super::components::*;
 use super::resources::*;
 
 use crate::game::mob::components::Mob;
+use crate::game::mob::resources::MobHealth;
+use crate::game::mob::systems::mob_lose_health;
 use crate::game::resources::Health;
 
 use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
 use crate::MyAssets;
-use bevy::ecs::system::Insert;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
+
+
+
+
 
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
@@ -26,16 +31,23 @@ pub fn move_player(
     mut query: Query<&AnimationEntityLink>,
     time: Res<Time>,
     mut done: Local<bool>,
+    
+    mut mob_health:ResMut<MobHealth>,
+    commands: Commands,
+    mob_query: Query<Entity, With<Mob>>,
 ) {
     let mut index = 0;
-    for animation_entity in query.iter_mut() {
+    for animation_entity in query.into() {
         index += 1;
         if index == 1 {
+            let animation_entity:(Query<&AnimationEntityLink>);
             if let Ok(mut player_animation) = animation_players.get_mut(animation_entity.0) {
-                for player in player_query.iter() {
+                for player in player_query.into_iter() {
                     if let Ok(mut transform) = transforms.get_mut(player) {
                         if mouse_input.pressed(MouseButton::Left) {
                             player_animation.play(animations.0[0].clone_weak());
+                           mob_lose_health(mob_health, commands, mob_query)
+
                         } else {
                             let mut jump = Vec3::ZERO;
                             let mut direction = Vec3::ZERO;

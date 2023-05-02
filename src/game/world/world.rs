@@ -34,7 +34,6 @@ pub fn setup(
     })
     .insert(Name::new("Sun"));
     
-    
     //ground
     commands
    /*     .spawn(PbrBundle {

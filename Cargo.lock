@@ -1317,6 +1317,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "client"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy-inspector-egui",
+ "bevy_asset_loader",
+ "bevy_rapier3d",
+ "bevy_renet",
+ "big-brain",
+ "bincode",
+ "local-ip-address",
+ "renet_visualizer",
+ "serde",
+]
+
+[[package]]
 name = "clipboard-win"
 version = "4.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3810,22 +3826,6 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
-
-[[package]]
-name = "voxel-dungeon-bevy"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy-inspector-egui",
- "bevy_asset_loader",
- "bevy_rapier3d",
- "bevy_renet",
- "big-brain",
- "bincode",
- "local-ip-address",
- "renet_visualizer",
- "serde",
-]
 
 [[package]]
 name = "waker-fn"

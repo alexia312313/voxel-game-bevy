@@ -1,25 +1,19 @@
-[package]
-name = "voxel-dungeon-bevy"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = ["client"]
+resolver = "2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+[workspace.dependencies]
 bevy = "0.10.1"
-bevy-inspector-egui = "0.18.3"
-bevy_rapier3d = { version = "0.21.0", features = [
-    "debug-render",
-    "parallel",
-    "simd-stable",
-] }
-big-brain = "0.17.0"
-bevy_asset_loader = "0.16.0"
 bevy_renet = "0.0.7"
 local-ip-address = "0.5.1"
-renet_visualizer = "0.0.4"
 serde = { version = "1.0", features = ["derive"] }
-bincode = "1.3.1"
+
+[profile.dev]
+opt-level = 1
 
 [profile.dev.package."*"]
 opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = true    #Change this to be per platform windows doesn't seem to like it

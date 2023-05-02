@@ -3,13 +3,14 @@ use big_brain::prelude::*;
 
 use crate::AppState;
 
-use super::systems::*;
+use super::{systems::*, resources::MobHealth};
 
 pub struct MobPlugin;
 
 impl Plugin for MobPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(setup.in_schedule(OnEnter(AppState::Game)))
+        .init_resource::<MobHealth>()
             .add_system(aggro_system.in_set(OnUpdate(AppState::Game)))
             .add_system(
                 aggro_action_system

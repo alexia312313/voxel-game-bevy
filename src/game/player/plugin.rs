@@ -21,10 +21,10 @@ impl Plugin for PlayerPlugin {
                     change_cam,
                     rotate_camera,
                     equip_weapon,
-                    check_collider,
-                    read_result_system,
-                   
+                   // check_collider,
+                 //   read_result_system,
                     lose_health,
+                    attack
                 )
                     .in_set(OnUpdate(AppState::Game)),
 

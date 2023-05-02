@@ -320,24 +320,13 @@ pub fn update_system(mut controllers: Query<&mut KinematicCharacterController>) 
     }
 }
 
-pub fn display_events(
-    mut collision_events: EventReader<CollisionEvent>,
-    mut contact_force_events: EventReader<ContactForceEvent>,
-) {
-    for collision_event in collision_events.iter() {
-        println!("Received collision event: {:?}", collision_event);
-    }
-
-    for contact_force_event in contact_force_events.iter() {
-        println!("Received contact force event: {:?}", contact_force_event);
-    }
-}
-
 pub fn lose_health(
     mut health: ResMut<Health>,
     mob: Query<&Mob>,
     mut collision_events: EventReader<CollisionEvent>,
 ) {
+    let mut contact_with_mob=false;
+
     for (e1, e2) in collision_events
         .iter()
         .filter_map(|event| {
@@ -349,9 +338,20 @@ pub fn lose_health(
         })
         .flatten()
     {
-        // is entity 1 a mob?
-        if let Ok(mob) = mob.get(e2.clone()) {
-            health.value -= 1;
+        // is entity 2 a mob?
+        if let Ok(mob) = mob.get(*e2) {
+            print!("contactWithMob= true");
+            contact_with_mob= true;
+          
+        } else{
+            contact_with_mob=false;
+            print!("contactWithMob= false")
         }
+
+        if contact_with_mob==true {           
+                health.value -= 1;
+                print!("lose health")
+        }
+
     }
 }

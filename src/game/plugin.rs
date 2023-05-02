@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 use super::{
-    mob::plugin::MobPlugin, player::plugin::PlayerPlugin, systems::link_animations,
-    ui::plugin::UiPlugin, world::plugin::WorldPlugin,
+    connection::plugin::ClientPlugin, mob::plugin::MobPlugin, player::plugin::PlayerPlugin,
+    systems::link_animations, ui::plugin::UiPlugin, world::plugin::WorldPlugin,
 };
 
 use big_brain::BigBrainPlugin;
@@ -21,6 +21,7 @@ impl Plugin for GamePlugin {
             // My Plugins
             .add_plugin(WorldPlugin)
             .add_plugin(MobPlugin)
+            .add_plugin(ClientPlugin)
             .add_plugin(PlayerPlugin)
             .add_plugin(UiPlugin)
             .add_system(link_animations.in_set(OnUpdate(AppState::Game)))

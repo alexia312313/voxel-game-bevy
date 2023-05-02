@@ -1,3 +1,4 @@
+pub mod connection;
 pub mod mob;
 pub mod player;
 pub mod plugin;

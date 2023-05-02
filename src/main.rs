@@ -1,3 +1,4 @@
+use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
@@ -15,14 +16,21 @@ mod systems;
 use systems::*;
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(Window {
-                title: "Voxel game".into(),
-                mode: WindowMode::BorderlessFullscreen,
-                ..default()
-            }),
-            ..default()
-        }))
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "Voxel game".into(),
+                        mode: WindowMode::BorderlessFullscreen,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(LogPlugin {
+                    filter: "info,wgpu_core=warn,wgpu_hal=off,rechannel=warn".into(),
+                    level: bevy::log::Level::DEBUG,
+                }),
+        )
         .add_state::<AppState>()
         .add_state::<CamState>()
         // Asset Loading

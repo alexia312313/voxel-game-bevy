@@ -25,7 +25,9 @@ impl Plugin for PlayerPlugin {
                  //   read_result_system,
 
                     lose_health,
-                    attack
+                  //  attack
+                  attack_sword,
+                
                 )
                     .in_set(OnUpdate(AppState::Game)),
 

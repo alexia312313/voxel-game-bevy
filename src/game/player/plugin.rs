@@ -13,17 +13,20 @@ impl Plugin for PlayerPlugin {
             .add_system(init_system.in_schedule(OnEnter(AppState::Game)))
 
             // Systems
-            .add_systems((
-                move_player,
-                rotate_camera, 
-                link_animations, 
-                equip_weapon,
-                check_collider,
-              //  read_result_system,
-                update_system,
-               // display_events, 
-              lose_health,
-            ).in_set(OnUpdate(AppState::Game)),
+
+            .add_systems(
+                (
+                    move_player,
+                    change_cam,
+                    rotate_camera,
+                    equip_weapon,
+                    check_collider,
+                    read_result_system,
+                    update_system,
+                    lose_health,
+                )
+                    .in_set(OnUpdate(AppState::Game)),
+
             );
     }
 }

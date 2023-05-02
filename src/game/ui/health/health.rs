@@ -13,18 +13,19 @@ pub fn spawn_ui_health(
 
     let window = window_query.get_single().unwrap();
 
-    commands.spawn((
-        Camera2dBundle {
-            transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
-            camera: Camera {
-                order: (0),
+    commands
+        .spawn((
+            Camera2dBundle {
+                transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
+                camera: Camera {
+                    order: (0),
+                    ..default()
+                },
                 ..default()
             },
-            ..default()
-        },
-        UICamera {},
-    ))
-    .insert(Name::new("UI camera 2d"));
+            UICamera {},
+        ))
+        .insert(Name::new("UI camera 2d"));
 }
 
 pub fn despawn_ui_health(
@@ -48,7 +49,8 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 ..default()
             },
             UiHealth {},
-        )).insert(Name::new("UIhealth setup"))
+        ))
+        .insert(Name::new("UIhealth setup"))
         .with_children(|parent| {
             parent
                 .spawn(NodeBundle {
@@ -67,23 +69,24 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
                             ..default()
                         },
                         ..default()
-                    },
-                );
-                    parent.spawn((TextBundle {
-                        text: Text {
-                            sections: vec![TextSection::new(
-                                "3",
-                                get_text_style(&asset_server),
-                            )],
-                            alignment: TextAlignment::Center,
+                    });
+                    parent.spawn((
+                        TextBundle {
+                            text: Text {
+                                sections: vec![TextSection::new(
+                                    "3",
+                                    get_text_style(&asset_server),
+                                )],
+                                alignment: TextAlignment::Center,
+                                ..default()
+                            },
                             ..default()
                         },
-                        ..default()
-                    },HealthText{},
-                ));
+                        HealthText {},
+                    ));
                 });
 
-                parent
+            parent
                 .spawn(NodeBundle {
                     style: SCORE_STYLE,
                     ..default()
@@ -100,22 +103,22 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
                             ..default()
                         },
                         ..default()
-                    },
-                );
-                    parent.spawn((TextBundle {
-                        text: Text {
-                            sections: vec![TextSection::new(
-                                "0",
-                                get_text_style(&asset_server),
-                            )],
-                            alignment: TextAlignment::Center,
+                    });
+                    parent.spawn((
+                        TextBundle {
+                            text: Text {
+                                sections: vec![TextSection::new(
+                                    "0",
+                                    get_text_style(&asset_server),
+                                )],
+                                alignment: TextAlignment::Center,
+                                ..default()
+                            },
                             ..default()
                         },
-                        ..default()
-                    },ScoreText{},
-                ));
+                        ScoreText {},
+                    ));
                 });
-
         })
         .id();
     ui_health_entity

@@ -1,11 +1,10 @@
 use bevy::prelude::*;
 
-use crate::game::ui::health::plugin::UiHealthPlugin;
 use crate::game::resources::*;
+use crate::game::ui::health::plugin::UiHealthPlugin;
 use crate::game::ui::update::*;
 
 pub struct UiPlugin;
-
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
@@ -19,8 +18,6 @@ impl Plugin for UiPlugin {
             .add_system(update_health_text)
             .add_system(update_score_text)
             //testing
-            .add_system(add_score_health)
-
-            ;
+            .add_system(add_score_health);
     }
 }

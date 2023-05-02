@@ -53,33 +53,37 @@ pub fn get_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
     }
 }
 
-pub const BOTTOM_HOLDER: Style = Style{
+pub const BOTTOM_HOLDER: Style = Style {
     flex_direction: FlexDirection::Row,
-    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),    
+    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
     justify_content: JustifyContent::SpaceEvenly,
-    ..Style::DEFAULT
-}; 
-
-pub const IMAGE_HOLDER: Style = Style{
-    flex_direction: FlexDirection::ColumnReverse,
-    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),    
-   
-    ..Style::DEFAULT
-}; 
-pub const IMAGE_STYLE: Style = Style {
-    justify_content:JustifyContent::FlexEnd,
-    //1920x1080 
-    size: Size::new(Val::Px(1344.0), Val::Px(756.0)),    
-
-    margin: UiRect::new(Val::Percent(1.0), Val::Percent(2.0), Val::Px(0.0), Val::Percent(1.0)),
     ..Style::DEFAULT
 };
 
-
-pub const TEXT_MENU: Style = Style{
-    flex_direction: FlexDirection::Column,
-    justify_content:JustifyContent::Center,
-    size: Size::new(Val::Percent(25.0), Val::Percent(100.0)),    
+pub const IMAGE_HOLDER: Style = Style {
+    flex_direction: FlexDirection::ColumnReverse,
+    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
 
     ..Style::DEFAULT
-}; 
+};
+pub const IMAGE_STYLE: Style = Style {
+    justify_content: JustifyContent::FlexEnd,
+    //1920x1080
+    size: Size::new(Val::Px(1344.0), Val::Px(756.0)),
+
+    margin: UiRect::new(
+        Val::Percent(1.0),
+        Val::Percent(2.0),
+        Val::Px(0.0),
+        Val::Percent(1.0),
+    ),
+    ..Style::DEFAULT
+};
+
+pub const TEXT_MENU: Style = Style {
+    flex_direction: FlexDirection::Column,
+    justify_content: JustifyContent::Center,
+    size: Size::new(Val::Percent(25.0), Val::Percent(100.0)),
+
+    ..Style::DEFAULT
+};

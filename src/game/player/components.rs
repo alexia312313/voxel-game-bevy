@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct Player {}
+pub struct Player {
+    pub mode: i32,
+}
 
 #[derive(Component)]
 pub struct PlayerModel;
@@ -15,6 +17,3 @@ pub struct PlayerController {
     pub pitch: Quat,
     pub cursor_locked: bool,
 }
-
-#[derive(Component)]
-pub struct AnimationEntityLink(pub Entity);

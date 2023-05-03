@@ -1,7 +1,9 @@
 use std::f32::consts::PI;
 
 use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
-use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
+use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody, Sensor};
+
+use super::components::BallModel;
 
 pub fn setup(
     mut commands: Commands,
@@ -47,7 +49,7 @@ pub fn setup(
 
     // testing
     commands
-        .spawn(RigidBody::Dynamic)
+        .spawn(((RigidBody::Dynamic),BallModel{}))
         .insert(Collider::ball(0.5))
         .insert(Name::new("Ball"))
         .insert(Restitution::coefficient(0.7))

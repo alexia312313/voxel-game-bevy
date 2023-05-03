@@ -8,7 +8,6 @@ use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
 use crate::MyAssets;
-use bevy::ecs::system::Insert;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
@@ -42,8 +41,7 @@ pub fn move_player(
                             let tr = transform.right();
                             let tf = transform.forward();
 
-
-                        //I suspect diffents pcs will run this differently, should probably use a delta time
+                            //I suspect diffents pcs will run this differently, should probably use a delta time
 
                             if keyboard_input.pressed(KeyCode::A) {
                                 direction -= Vec3::new(tr.x, 0.0, tr.z);
@@ -57,7 +55,6 @@ pub fn move_player(
                             if keyboard_input.pressed(KeyCode::S) {
                                 direction -= Vec3::new(tf.x, 0.0, tf.z);
                             }
-
 
                             if keyboard_input.pressed(KeyCode::Space) {
                                 jump += Vec3::new(0.0, 2.0, 0.0);
@@ -312,16 +309,14 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
     }
 }
 
-
-
 pub fn lose_health(
     mut health: ResMut<Health>,
     mob: Query<&Mob>,
     mut collision_events: EventReader<CollisionEvent>,
 ) {
-    let mut contact_with_mob=false;
+    let mut contact_with_mob: bool;
 
-    for (e1, e2) in collision_events
+    for (_e1, e2) in collision_events
         .iter()
         .filter_map(|event| {
             if let CollisionEvent::Started(e1, e2, _) = event {
@@ -333,21 +328,18 @@ pub fn lose_health(
         .flatten()
     {
         // is entity 2 a mob?
-        if let Ok(mob) = mob.get(*e2) {
+        if let Ok(_mob) = mob.get(*e2) {
             print!("contactWithMob= true");
-            contact_with_mob= true;
-          
-        } else{
-            contact_with_mob=false;
+            contact_with_mob = true;
+        } else {
+            contact_with_mob = false;
             print!("contactWithMob= false")
         }
 
-        if contact_with_mob==true {           
-                health.value -= 1;
-                print!("lose health")
+        if contact_with_mob == true {
+            health.value -= 1;
+            print!("lose health")
         }
-
-
     }
 }
 

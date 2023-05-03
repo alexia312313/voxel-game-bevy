@@ -2,8 +2,6 @@ use bevy::prelude::*;
 use bevy_renet::RenetClientPlugin;
 
 use super::systems::*;
-
-use crate::AppState;
 pub struct ClientPlugin;
 
 impl Plugin for ClientPlugin {

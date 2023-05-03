@@ -79,18 +79,18 @@ enum GameState {
 
 #[derive(AssetCollection, Resource)]
 pub struct MyAssets {
-    #[asset(path = "mereo.gltf#Scene0")]
+    #[asset(path = "models/player/mereo.gltf#Scene0")]
     player: Handle<Scene>,
-    #[asset(path = "purple-sword.gltf#Scene0")]
+    #[asset(path = "models/player/purple-sword.gltf#Scene0")]
     sword: Handle<Scene>,
-    #[asset(path = "slime.gltf#Scene0")]
+    #[asset(path = "models/mobs/slime.gltf#Scene0")]
     slime: Handle<Scene>,
-    #[asset(path = "mereo.gltf#Animation0")]
+    #[asset(path = "models/player/mereo.gltf#Animation0")]
     player_animation_hit: Handle<AnimationClip>,
-    #[asset(path = "mereo.gltf#Animation2")]
+    #[asset(path = "models/player/mereo.gltf#Animation2")]
     player_animation_walking: Handle<AnimationClip>,
-    #[asset(path = "mereo.gltf#Animation1")]
+    #[asset(path = "models/player/mereo.gltf#Animation1")]
     player_animation_idle: Handle<AnimationClip>,
-    #[asset(path = "slime.gltf#Animation0")]
+    #[asset(path = "models/mobs/slime.gltf#Animation0")]
     slime_animation_walking: Handle<AnimationClip>,
 }

@@ -1,4 +1,4 @@
-use bevy::{log::LogPlugin, prelude::*};
+use bevy::log::LogPlugin;
 
 use bevy_renet::{
     renet::{RenetServer, ServerConfig},
@@ -56,7 +56,7 @@ fn create_renet_server() -> RenetServer {
 fn server_events(mut events: EventReader<ServerEvent>) {
     for event in events.iter() {
         match event {
-            ServerEvent::ClientConnected(id, user_data) => info!("CONNECTED! {}!", id),
+            ServerEvent::ClientConnected(id, _user_data) => info!("CONNECTED! {}!", id),
             ServerEvent::ClientDisconnected(id) => info!("DISCONNECTED :C {}!", id),
         }
     }

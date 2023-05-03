@@ -3,7 +3,6 @@ use super::resources::*;
 
 use crate::game::mob::components::Mob;
 use crate::game::mob::resources::MobHealth;
-use crate::game::mob::systems::mob_lose_health;
 use crate::game::resources::Health;
 
 use crate::game::resources::AnimationEntityLink;
@@ -16,26 +15,36 @@ use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
 
 pub fn attack_sword(
+    rapier_context: Res<RapierContext>,
+    mob_query: Query<Entity, With<Mob>>,
     weapon_model: Query<Entity, With<WeaponModel>>,
-    _my_assets: Res<MyAssets>,
     mut commands: Commands,
     mouse_input: Res<Input<MouseButton>>,
+    mut mob_health: ResMut<MobHealth>,
 ) {
-    if mouse_input.pressed(MouseButton::Left) {
-        for weapon in weapon_model.iter() {}
+
+    for weapon in  weapon_model.iter(){
+        for mob in  mob_query.iter() {
+            if rapier_context.intersection_pair(weapon,mob) == Some(true){
+                if mouse_input.pressed(MouseButton::Left) {
+                    
+                    if mob_health.value > 0 {
+                        mob_health.value -= 1;
+                    }
+                
+                    if mob_health.value == 0 {
+                      commands.entity(mob).despawn_recursive()
+                    }
+                }
+
+        }
+    }
     }
 }
 
-pub fn attack(
-    mouse_input: Res<Input<MouseButton>>,
-    mut mob_health: ResMut<MobHealth>,
-    commands: Commands,
-    mob_query: Query<Entity, With<Mob>>,
-) {
-    if mouse_input.pressed(MouseButton::Left) {
-        mob_lose_health(mob_health, commands, mob_query)
-    }
-}
+
+
+
 
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,

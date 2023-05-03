@@ -5,12 +5,9 @@ pub struct Health {
     pub value: u32,
 }
 
-impl Default for Health{
-    fn default()-> Health{
-        Health{
-            value:10000
-        }
-
+impl Default for Health {
+    fn default() -> Health {
+        Health { value: 10000 }
     }
 }
 

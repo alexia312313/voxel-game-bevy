@@ -8,10 +8,8 @@ pub struct MobHealth {
     pub value: u32,
 }
 
-impl Default for MobHealth{
-    fn default()-> MobHealth{
-        MobHealth{
-            value:3
-        }
+impl Default for MobHealth {
+    fn default() -> MobHealth {
+        MobHealth { value: 3 }
     }
 }

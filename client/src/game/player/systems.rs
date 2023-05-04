@@ -53,9 +53,6 @@ pub fn attack(
     }
 }
 
-
-
-
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
     mouse_input: Res<Input<MouseButton>>,
@@ -84,8 +81,7 @@ pub fn move_player(
                             let tr = transform.right();
                             let tf = transform.forward();
 
-                        //I suspect diffents pcs will run this differently, should probably use a delta time
-
+                            //I suspect diffents pcs will run this differently, should probably use a delta time
                             if keyboard_input.pressed(KeyCode::A) {
                                 direction -= Vec3::new(tr.x, 0.0, tr.z);
                             }
@@ -98,7 +94,6 @@ pub fn move_player(
                             if keyboard_input.pressed(KeyCode::S) {
                                 direction -= Vec3::new(tf.x, 0.0, tf.z);
                             }
-
 
                             if keyboard_input.pressed(KeyCode::Space) {
                                 jump += Vec3::new(0.0, 2.0, 0.0);
@@ -353,15 +348,15 @@ pub fn check_collider(mut collider: Query<&ActiveEvents, With<Player>>) {
     }
 }
 
-
-
 pub fn lose_health(
     mut health: ResMut<Health>,
     mob: Query<&Mob>,
     mut collision_events: EventReader<CollisionEvent>,
 ) {
 
-    for (e1, e2) in collision_events
+    let mut contact_with_mob: bool;
+
+    for (_e1, e2) in collision_events
         .iter()
         .filter_map(|event| {
             if let CollisionEvent::Started(e1, e2, _) = event {
@@ -388,7 +383,6 @@ pub fn lose_health(
                 health.value -= 1;
                 print!("lose health")
         }
-
 
     }
 }

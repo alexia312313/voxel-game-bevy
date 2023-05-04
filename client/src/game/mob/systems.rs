@@ -186,7 +186,6 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
         });
 }
 
-
 pub fn mob_lose_health (
     mut mob_health: ResMut<MobHealth>,
     commands:  Commands,

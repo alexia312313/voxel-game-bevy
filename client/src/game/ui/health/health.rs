@@ -66,7 +66,6 @@ pub fn build_ui_health(commands: &mut Commands, asset_server: &Res<AssetServer>)
                                 get_text_style(&asset_server),
                             )],
                             alignment: TextAlignment::Center,
-                            
                             ..default()
                         },
                         ..default()

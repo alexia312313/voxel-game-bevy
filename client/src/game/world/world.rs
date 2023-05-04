@@ -55,8 +55,6 @@ pub fn setup(
         .insert(Name::new("Ball"))
         .insert(Restitution::coefficient(0.7))
         .insert(TransformBundle::from_transform(Transform::from_xyz(0.0,5.0, 0.0)));
-
-
 }
 
 pub fn animate_light_direction(
@@ -66,6 +64,4 @@ pub fn animate_light_direction(
     for mut transform in &mut query {
         transform.rotate_y(time.delta_seconds() * 0.05);
     }
-
-
 }

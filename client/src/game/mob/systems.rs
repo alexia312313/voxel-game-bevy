@@ -185,3 +185,27 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             ));
         });
 }
+
+pub fn mob_lose_health (
+    mut mob_health: ResMut<MobHealth>,
+    commands:  Commands,
+    mob_query: Query<Entity, With<Mob>>, 
+ ){
+     if mob_health.value>0 {
+         mob_health.value -=1;
+     }
+
+     if mob_health.value ==0{
+
+         mob_despawn(commands, mob_query)
+     }
+ }
+
+pub fn mob_despawn(
+   mut commands: Commands,
+    mob_query: Query<Entity, With<Mob>>,
+) {
+        for mob_entity in mob_query.into_iter() {
+           commands.entity(mob_entity).despawn_recursive()
+        }
+    } 

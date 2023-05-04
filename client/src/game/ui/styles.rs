@@ -6,6 +6,7 @@ pub const UI: Style = Style {
     justify_content: JustifyContent::SpaceBetween,
     align_items: AlignItems::Center,
     size: Size::new(Val::Percent(100.0), Val::Percent(15.0)),
+    margin: UiRect::new(Val::Px(0.0), Val::Px(0.0), Val::Percent(50.0), Val::Px(0.0)),
     ..Style::DEFAULT
 };
 
@@ -15,7 +16,7 @@ pub const HEALTH_STYLE: Style = Style {
     justify_content: JustifyContent::Center,
     align_items: AlignItems::Center,
     size: Size::new(Val::Px(200.0), Val::Percent(80.0)),
-    margin: UiRect::new(Val::Px(32.0), Val::Px(0.0), Val::Px(0.0), Val::Px(0.0)),
+    margin: UiRect::new(Val::Px(60.0), Val::Px(0.0), Val::Px(0.0), Val::Px(0.0)),
     ..Style::DEFAULT
 };
 

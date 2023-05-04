@@ -20,35 +20,29 @@ pub fn attack_sword(
     _my_assets: Res<MyAssets>,
     mut commands: Commands,
     mouse_input: Res<Input<MouseButton>>,
-
 ) {
     if mouse_input.pressed(MouseButton::Left) {
-        for weapon in weapon_model.iter(){
-            commands.entity(weapon)
-            .with_children(|parent|{
+        for weapon in weapon_model.iter() {
+            commands.entity(weapon).with_children(|parent| {
                 parent.spawn(Collider::cuboid(0.1, 0.1, 0.1));
-                //TOOD move the collider a bit up and more sword like, maybe change the type 
-                // check why sword is not spawning anymore 
+                //TOOD move the collider a bit up and more sword like, maybe change the type
+                // check why sword is not spawning anymore
             });
         }
-    }else{
-        for weapon in weapon_model.iter(){
-            commands.entity(weapon)
-            .despawn_descendants()
+    } else {
+        for weapon in weapon_model.iter() {
+            commands.entity(weapon).despawn_descendants()
         }
     }
-      
 }
-
 
 pub fn attack(
     mouse_input: Res<Input<MouseButton>>,
-    mut mob_health: ResMut<MobHealth>,
-    commands:  Commands,
-    mob_query: Query<Entity, With<Mob>>, 
-){
+    mob_health: ResMut<MobHealth>,
+    commands: Commands,
+    mob_query: Query<Entity, With<Mob>>,
+) {
     if mouse_input.pressed(MouseButton::Left) {
-        
         mob_lose_health(mob_health, commands, mob_query)
     }
 }
@@ -353,9 +347,6 @@ pub fn lose_health(
     mob: Query<&Mob>,
     mut collision_events: EventReader<CollisionEvent>,
 ) {
-
-    let mut contact_with_mob: bool;
-
     for (_e1, e2) in collision_events
         .iter()
         .filter_map(|event| {
@@ -367,23 +358,21 @@ pub fn lose_health(
         })
         .flatten()
     {
-        let contact_with_mob:bool;
+        let contact_with_mob: bool;
 
         // is entity 2 a mob?
-        if let Ok(mob) = mob.get(*e2) {
+        if let Ok(_mob) = mob.get(*e2) {
             print!("contactWithMob= true");
-            contact_with_mob= true;
-          
-        } else{
-            contact_with_mob=false;
+            contact_with_mob = true;
+        } else {
+            contact_with_mob = false;
             print!("contactWithMob= false")
         }
 
-        if contact_with_mob==true {           
-                health.value -= 1;
-                print!("lose health")
+        if contact_with_mob == true {
+            health.value -= 1;
+            print!("lose health")
         }
-
     }
 }
 

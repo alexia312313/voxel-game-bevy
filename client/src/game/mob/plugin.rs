@@ -1,9 +1,8 @@
 use bevy::prelude::*;
 use big_brain::prelude::*;
 
+use super::{resources::MobHealth, systems::*};
 use crate::AppState;
-use super::{systems::*, resources::MobHealth};
-
 
 pub struct MobPlugin;
 

@@ -13,13 +13,15 @@ pub fn spawn_main_menu(
 
     let window = window_query.get_single().unwrap();
 
-    commands.spawn((
-        Camera2dBundle {
-            transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
-            ..default()
-        },
-        CameraMenu {},
-    )).insert(Name::new("Main menu 2d camera"));
+    commands
+        .spawn((
+            Camera2dBundle {
+                transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
+                ..default()
+            },
+            CameraMenu {},
+        ))
+        .insert(Name::new("Main menu 2d camera"));
 }
 
 pub fn despawn_main_menu(
@@ -85,7 +87,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                             //Image Loader
                             parent.spawn(ImageBundle {
                                 style: IMAGE_STYLE,
-                                image: asset_server.load("campfire.png").into(),
+                                image: asset_server.load("menu/campfire.png").into(),
                                 ..Default::default()
                             });
                         });

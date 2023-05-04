@@ -88,7 +88,7 @@ pub fn build_settings_menu(commands: &mut Commands, asset_server: &Res<AssetServ
                             //Image Loader
                             parent.spawn(ImageBundle {
                                 style: IMAGE_STYLE,
-                                image: asset_server.load("campfire.png").into(),
+                                image: asset_server.load("menu/campfire.png").into(),
                                 ..Default::default()
                             });
                         });

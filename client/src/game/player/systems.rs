@@ -9,7 +9,6 @@ use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
 use crate::MyAssets;
-use crate::game::world::components::BallModel;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;

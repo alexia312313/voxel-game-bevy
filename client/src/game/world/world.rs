@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
-use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody, Sensor};
+use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
 
 use super::components::BallModel;
 

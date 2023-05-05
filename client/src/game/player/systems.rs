@@ -38,7 +38,7 @@ pub fn attack_sword(
 
 pub fn attack(
     mouse_input: Res<Input<MouseButton>>,
-    mob_health: ResMut<MobHealth>,
+    mut  mob_health: ResMut<MobHealth>,
     commands: Commands,
     mob_query: Query<Entity, With<Mob>>,
 ) {
@@ -269,6 +269,14 @@ pub fn equip_weapon(
                             WeaponModel {},
                         ))
                         .insert(Name::new("Weapon model"));
+                    
+                    parent
+                        //y de height,
+                        .spawn(Collider::cuboid(0.25, 0.25, 0.1))
+                        .insert(Sensor)
+                        // y positiva hacia arriba,
+                        .insert(Transform::from_xyz(0.0, 0.0, 0.0))
+                        .insert(Name::new("Weapon Collider"));
                 });
             }
         }

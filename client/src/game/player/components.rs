@@ -17,3 +17,7 @@ pub struct PlayerController {
     pub pitch: Quat,
     pub cursor_locked: bool,
 }
+
+
+#[derive(Component)]
+pub struct WeaponCollider;

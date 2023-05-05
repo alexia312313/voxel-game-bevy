@@ -3,7 +3,6 @@ use super::resources::*;
 
 use crate::game::mob::components::Mob;
 use crate::game::mob::resources::MobHealth;
-use crate::game::mob::systems::mob_lose_health;
 use crate::game::resources::Health;
 
 use crate::game::resources::AnimationEntityLink;
@@ -16,36 +15,53 @@ use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
 
 pub fn attack_sword(
-    weapon_model: Query<Entity, With<WeaponModel>>,
-    _my_assets: Res<MyAssets>,
+    rapier_context: Res<RapierContext>,
+    mob_query: Query<Entity, With<Mob>>,
+    weapon_collider: Query<Entity,With<WeaponCollider>>,
     mut commands: Commands,
     mouse_input: Res<Input<MouseButton>>,
+    mut mob_health: ResMut<MobHealth>,
 ) {
-    if mouse_input.pressed(MouseButton::Left) {
-        for weapon in weapon_model.iter() {
-            commands.entity(weapon).with_children(|parent| {
-                parent.spawn(Collider::cuboid(0.1, 0.1, 0.1));
-                //TOOD move the collider a bit up and more sword like, maybe change the type
-                // check why sword is not spawning anymore
-            });
+
+    for weapon in  weapon_collider.iter(){
+        for mob in  mob_query.iter() {
+            if rapier_context.intersection_pair(weapon,mob) == Some(true){
+                println!("The colliders {:?} and {:?} are intersecting!", weapon, mob);
+
+                if mouse_input.pressed(MouseButton::Left) {
+                    
+                    if mob_health.value > 0 {
+                        mob_health.value -= 1;
+                    }
+                
+                    if mob_health.value == 0 {
+                      commands.entity(mob).despawn_recursive()
+                    }
+                }
+
         }
-    } else {
-        for weapon in weapon_model.iter() {
-            commands.entity(weapon).despawn_descendants()
+    }
+    }
+}
+
+pub fn attack_sword_v2(
+    ball_model :Query<Entity,With<WeaponCollider>>,
+    rapier_context: Res<RapierContext>,
+
+) {
+    for weapon in ball_model.iter() {
+        for (collider1, collider2, intersecting) in rapier_context.intersections_with(weapon) {
+            if intersecting {
+                println!(
+                    "The entities {:?} and {:?} have intersecting colliders!",
+                    collider1, collider2
+                );
+            }
         }
     }
 }
 
-pub fn attack(
-    mouse_input: Res<Input<MouseButton>>,
-    mob_health: ResMut<MobHealth>,
-    commands: Commands,
-    mob_query: Query<Entity, With<Mob>>,
-) {
-    if mouse_input.pressed(MouseButton::Left) {
-        mob_lose_health(mob_health, commands, mob_query)
-    }
-}
+
 
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
@@ -76,6 +92,7 @@ pub fn move_player(
                             let tf = transform.forward();
 
                             //I suspect diffents pcs will run this differently, should probably use a delta time
+
                             if keyboard_input.pressed(KeyCode::A) {
                                 direction -= Vec3::new(tr.x, 0.0, tr.z);
                             }
@@ -269,6 +286,13 @@ pub fn equip_weapon(
                             WeaponModel {},
                         ))
                         .insert(Name::new("Weapon model"));
+                    parent
+                        //y de height,
+                        .spawn((Collider::cuboid(1.0, 1.0, 1.0),WeaponCollider{}))
+                        .insert(Sensor)
+                        // y positiva hacia arriba,
+                        .insert(Transform::from_xyz(0.0, 0.0, 0.0))
+                        .insert(Name::new("Weapon Collider"));
                 });
             }
         }
@@ -362,16 +386,16 @@ pub fn lose_health(
 
         // is entity 2 a mob?
         if let Ok(_mob) = mob.get(*e2) {
-            print!("contactWithMob= true");
+          //  print!("contactWithMob= true");
             contact_with_mob = true;
         } else {
             contact_with_mob = false;
-            print!("contactWithMob= false")
+          //  print!("contactWithMob= false")
         }
 
         if contact_with_mob == true {
             health.value -= 1;
-            print!("lose health")
+          //  print!("lose health")
         }
     }
 }

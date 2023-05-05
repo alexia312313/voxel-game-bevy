@@ -23,6 +23,7 @@ impl Plugin for PlayerPlugin {
                     lose_health,
                     // attack
                     attack_sword,
+                    //attack_sword_v2,
                 )
                     .in_set(OnUpdate(AppState::Game)),
             );

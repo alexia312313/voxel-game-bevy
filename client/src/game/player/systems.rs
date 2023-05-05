@@ -9,6 +9,7 @@ use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
 use crate::MyAssets;
+use crate::game::world::components::BallModel;
 use bevy::render::camera::Projection::Perspective;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
@@ -21,11 +22,14 @@ pub fn attack_sword(
     mut commands: Commands,
     mouse_input: Res<Input<MouseButton>>,
     mut mob_health: ResMut<MobHealth>,
+    ball_model :Query<Entity,With<BallModel>>
 ) {
 
     for weapon in  weapon_model.iter(){
         for mob in  mob_query.iter() {
             if rapier_context.intersection_pair(weapon,mob) == Some(true){
+                println!("The colliders {:?} and {:?} are intersecting!", weapon, mob);
+
                 if mouse_input.pressed(MouseButton::Left) {
                     
                     if mob_health.value > 0 {
@@ -42,7 +46,26 @@ pub fn attack_sword(
     }
 }
 
-
+pub fn attack_sword_v2(
+    ball_model :Query<Entity,With<BallModel>>,
+    rapier_context: Res<RapierContext>,
+    mob_query: Query<Entity, With<Mob>>,
+    weapon_model: Query<Entity, With<WeaponModel>>,
+    mut commands: Commands,
+    mouse_input: Res<Input<MouseButton>>,
+    mut mob_health: ResMut<MobHealth>,
+) {
+    for weapon in ball_model.iter() {
+        for (collider1, collider2, intersecting) in rapier_context.intersections_with(weapon) {
+            if intersecting {
+                println!(
+                    "The entities {:?} and {:?} have intersecting colliders!",
+                    collider1, collider2
+                );
+            }
+        }
+    }
+}
 
 
 
@@ -271,7 +294,7 @@ pub fn equip_weapon(
                         .insert(Name::new("Weapon model"));
                     parent
                         //y de height,
-                        .spawn(Collider::cuboid(0.25, 0.25, 0.1))
+                        .spawn(Collider::cuboid(1.0, 1.0, 1.0))
                         .insert(Sensor)
                         // y positiva hacia arriba,
                         .insert(Transform::from_xyz(0.0, 0.0, 0.0))
@@ -369,16 +392,16 @@ pub fn lose_health(
 
         // is entity 2 a mob?
         if let Ok(_mob) = mob.get(*e2) {
-            print!("contactWithMob= true");
+          //  print!("contactWithMob= true");
             contact_with_mob = true;
         } else {
             contact_with_mob = false;
-            print!("contactWithMob= false")
+          //  print!("contactWithMob= false")
         }
 
         if contact_with_mob == true {
             health.value -= 1;
-            print!("lose health")
+          //  print!("lose health")
         }
     }
 }

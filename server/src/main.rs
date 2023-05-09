@@ -1,15 +1,29 @@
-use bevy::log::LogPlugin;
+use bevy::{log::LogPlugin, ecs::event};
 
 use bevy_renet::{
     renet::{RenetServer, ServerConfig},
     RenetServerPlugin,
 };
 use local_ip_address::local_ip;
+use std::collections::HashMap;
+
+#[derive(Debug, Default, Resource)]
+pub struct ServerLobby {
+    pub players: HashMap<u64, Entity>,
+}
 
 pub use bevy::prelude::*;
 pub use bevy_renet::renet::*;
 pub use bevy_renet::*;
 use serde::{Deserialize, Serialize};
+
+//import player froim src/game/player.rs
+pub struct Player {
+    pub id: u64,
+    pub name: String,
+    pub position: Vec3,
+    pub rotation: Quat,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ServerMessage {
@@ -51,6 +65,25 @@ fn create_renet_server() -> RenetServer {
     let socket = UdpSocket::bind(inbound_server_addr).unwrap();
 
     RenetServer::new(current_time, server_config, connection_config, socket).unwrap()
+}
+
+fn server_update_system(
+    mut server_events: EventReader<ServerEvent>,
+    mut commands: Commands,
+    mut server: ResMut<RenetServer>,
+    mut lobby: ResMut<ServerLobby>,
+) {
+    for event in server_events.iter(){
+        match event {
+            ServerEvent::ClientConnected(message, _user_data) => {
+                info!("CONNECTED! {}!", message);
+            },
+            ServerEvent::ClientDisconnected(id) => {
+                info!("DISCONNECTED :C {}!", id);
+            },
+            //Event receiveMessage
+        }
+    }
 }
 
 fn server_events(mut events: EventReader<ServerEvent>) {

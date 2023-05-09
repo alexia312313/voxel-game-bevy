@@ -11,3 +11,4 @@ bevy.workspace = true
 bevy_renet.workspace = true
 local-ip-address.workspace = true
 serde.workspace = true
+common = { path = "../common" }

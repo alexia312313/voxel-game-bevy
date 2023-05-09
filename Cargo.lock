@@ -1327,6 +1327,7 @@ dependencies = [
  "bevy_renet",
  "big-brain",
  "bincode",
+ "common",
  "local-ip-address",
  "renet_visualizer",
  "serde",
@@ -1373,6 +1374,17 @@ checksum = "35ed6e9d84f0b51a7f52daf1c7d71dd136fd7a3f41a8462b8cdb8c78d920fad4"
 dependencies = [
  "bytes",
  "memchr",
+]
+
+[[package]]
+name = "common"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_rapier3d",
+ "bevy_renet",
+ "local-ip-address",
+ "serde",
 ]
 
 [[package]]
@@ -3413,6 +3425,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_renet",
+ "common",
  "local-ip-address",
  "serde",
 ]

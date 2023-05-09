@@ -10,6 +10,6 @@ pub struct MobHealth {
 
 impl Default for MobHealth {
     fn default() -> MobHealth {
-        MobHealth { value: 3 }
+        MobHealth { value: 1000 }
     }
 }

@@ -24,6 +24,7 @@ impl Plugin for PlayerPlugin {
                     // attack
                     attack_sword,
                     //attack_sword_v2,
+                    mob_red
                 )
                     .in_set(OnUpdate(AppState::Game)),
             );

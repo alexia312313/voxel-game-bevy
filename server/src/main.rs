@@ -1,39 +1,25 @@
-use bevy::{log::LogPlugin, ecs::event};
+use bevy::{ecs::event, log::LogPlugin};
 
 use bevy_renet::{
     renet::{RenetServer, ServerConfig},
     RenetServerPlugin,
 };
 use local_ip_address::local_ip;
-use std::collections::HashMap;
-
-#[derive(Debug, Default, Resource)]
-pub struct ServerLobby {
-    pub players: HashMap<u64, Entity>,
-}
 
 pub use bevy::prelude::*;
 pub use bevy_renet::renet::*;
 pub use bevy_renet::*;
 use serde::{Deserialize, Serialize};
 
-//import player froim src/game/player.rs
-pub struct Player {
-    pub id: u64,
-    pub name: String,
-    pub position: Vec3,
-    pub rotation: Quat,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum ServerMessage {
-    Pong,
-}
-
-pub const PROTOCOL_ID: u64 = 1000;
+use common::player::things::{
+    server_connection_config, ClientChannel, NetworkedEntities, Player, PlayerCommand, PlayerInput,
+    ServerChannel, ServerMessages, PRIVATE_KEY, PROTOCOL_ID,
+};
 
 use std::{
+    collections::HashMap,
     net::{SocketAddr, UdpSocket},
+    process::id,
     time::{Duration, SystemTime},
 };
 
@@ -46,24 +32,19 @@ fn main() {
         .insert_resource(create_renet_server())
         .add_plugin(RenetServerPlugin::default())
         .add_system(server_events)
+        .add_system(server_update_system)
         .run();
 }
 
 fn create_renet_server() -> RenetServer {
-    let current_time: Duration = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap();
-
-    let server_addr = SocketAddr::new(local_ip().unwrap(), 7010);
-    print!("Creating Server {:?}", server_addr);
+    let server_addr = "127.0.0.1:5000".parse().unwrap();
+    let socket = UdpSocket::bind(server_addr).unwrap();
+    let connection_config = server_connection_config();
     let server_config =
         ServerConfig::new(64, PROTOCOL_ID, server_addr, ServerAuthentication::Unsecure);
-
-    let connection_config = RenetConnectionConfig::default();
-
-    let inbound_server_addr = SocketAddr::new(local_ip().unwrap(), 7010);
-    let socket = UdpSocket::bind(inbound_server_addr).unwrap();
-
+    let current_time = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap();
     RenetServer::new(current_time, server_config, connection_config, socket).unwrap()
 }
 
@@ -71,26 +52,49 @@ fn server_update_system(
     mut server_events: EventReader<ServerEvent>,
     mut commands: Commands,
     mut server: ResMut<RenetServer>,
-    mut lobby: ResMut<ServerLobby>,
 ) {
-    for event in server_events.iter(){
+    for event in server_events.iter() {
         match event {
-            ServerEvent::ClientConnected(message, _user_data) => {
-                info!("CONNECTED! {}!", message);
-            },
+            ServerEvent::ClientConnected(id, _user_data) => {
+                info!("CONNECTED! update_systems{}!", id);
+                let message: Vec<u8> =
+                    bincode::serialize(&ServerMessages::PlayerJoined { id: *id }).unwrap();
+                server.send_message(*id, ServerChannel::ServerMessages, message);
+            }
             ServerEvent::ClientDisconnected(id) => {
                 info!("DISCONNECTED :C {}!", id);
-            },
-            //Event receiveMessage
+            } //Event receiveMessage
+        }
+    }
+    for client_id in server.clients_id().into_iter() {
+        while let Some(message) = server.receive_message(client_id, ClientChannel::Command) {
+            println!("ENTREM EN EL MATCH");
+            let command: PlayerCommand = bincode::deserialize(&message).unwrap();
+            match command {
+                PlayerCommand::InfoDump { string } => {
+                    println!("{}: {}", client_id, string);
+                }
+            }
         }
     }
 }
-
-fn server_events(mut events: EventReader<ServerEvent>) {
+fn server_events(mut events: EventReader<ServerEvent>, mut server: ResMut<RenetServer>) {
     for event in events.iter() {
         match event {
-            ServerEvent::ClientConnected(id, _user_data) => info!("CONNECTED! {}!", id),
+            ServerEvent::ClientConnected(id, _user_data) => {
+                info!("CONNECTED! server_events {}!", id)
+            }
             ServerEvent::ClientDisconnected(id) => info!("DISCONNECTED :C {}!", id),
+        }
+    }
+    for client_id in server.clients_id().into_iter() {
+        while let Some(message) = server.receive_message(client_id, ClientChannel::Command) {
+            let command: PlayerCommand = bincode::deserialize(&message).unwrap();
+            match command {
+                PlayerCommand::InfoDump { string } => {
+                    println!("{}: {}", client_id, string);
+                }
+            }
         }
     }
 }

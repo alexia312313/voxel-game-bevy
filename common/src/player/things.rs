@@ -1,13 +1,14 @@
-use std::time::Duration;
 use bevy::prelude::{shape::Icosphere, *};
 use bevy_rapier3d::prelude::*;
-use bevy_renet::renet::{ChannelConfig, ReliableChannelConfig, RenetConnectionConfig, UnreliableChannelConfig, NETCODE_KEY_BYTES};
+use bevy_renet::renet::{
+    ChannelConfig, ReliableChannelConfig, RenetConnectionConfig, UnreliableChannelConfig,
+    NETCODE_KEY_BYTES,
+};
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 
 pub const PRIVATE_KEY: &[u8; NETCODE_KEY_BYTES] = b"an example very very secret key."; // 32-bytes
 pub const PROTOCOL_ID: u64 = 7;
-
-
 
 #[derive(Debug, Component)]
 pub struct Player {
@@ -24,7 +25,8 @@ pub struct PlayerInput {
 
 #[derive(Debug, Serialize, Deserialize, Component)]
 pub enum PlayerCommand {
-    BasicAttack { cast_at: Vec3 },
+    //BasicAttack { cast_at: Vec3 },
+    InfoDump { string: String },
 }
 
 pub enum ClientChannel {
@@ -39,7 +41,7 @@ pub enum ServerChannel {
 
 #[derive(Debug, Serialize, Deserialize, Component)]
 pub enum ServerMessages {
-    PlayerJoined { id: u64},
+    PlayerJoined { id: u64 },
     PlayerRemove { id: u64 },
 }
 

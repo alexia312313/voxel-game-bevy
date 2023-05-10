@@ -9,11 +9,13 @@ use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
 use crate::MyAssets;
+use bevy::reflect::TypeUuid;
 use bevy::render::camera::Projection::Perspective;
+use bevy::render::render_resource::AsBindGroup;
+use bevy::scene::SceneInstance;
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
-
 pub fn attack_sword(
     rapier_context: Res<RapierContext>,
     mob_query: Query<Entity, With<Mob>>,
@@ -21,20 +23,44 @@ pub fn attack_sword(
     mut commands: Commands,
     mouse_input: Res<Input<MouseButton>>,
     mut mob_health: ResMut<MobHealth>,
+    mut standard_material: ResMut<Assets<StandardMaterial>>,
 ) {
+    let mut mob_taking_damage: bool;
+    //looks the weapon collider
     for weapon in weapon_collider.iter() {
+        // look for mobs
         for mob in mob_query.iter() {
+            // checks the collision betwen the weapon and mob exists
             if rapier_context.intersection_pair(weapon, mob) == Some(true) {
                 println!("The colliders {:?} and {:?} are intersecting!", weapon, mob);
 
-                if mouse_input.pressed(MouseButton::Left) {
-                    if mob_health.value > 0 {
-                        mob_health.value -= 1;
-                        
-                    }
+                // if left button not pressed then mob never taking damage
+                mob_taking_damage = false;
 
+                //checks if the left button is pressed
+                if mouse_input.pressed(MouseButton::Left) {
+                    //if the health of mob is positive
+                    if mob_health.value > 0 {
+                        //it can take damage
+                        mob_taking_damage = true;
+
+                        if mob_taking_damage == true {
+                            //loses 1 on hp and makes the mob go red
+                            mob_health.value -= 1;
+                            for asset in standard_material.iter_mut() {
+                                asset.1.base_color = Color::RED;
+                            }
+                        }
+                    }
+                    //if the health is 0 despwans the mob and all its children ( collider etc...)
                     if mob_health.value == 0 {
                         commands.entity(mob).despawn_recursive()
+                    }
+                }
+                //checks if taking damage, if false sets the color back to white which is standard
+                if mob_taking_damage == false {
+                    for asset in standard_material.iter_mut() {
+                        asset.1.base_color = Color::WHITE;
                     }
                 }
             }
@@ -42,22 +68,47 @@ pub fn attack_sword(
     }
 }
 
-pub fn mob_red(
-    mob_health: ResMut<MobHealth>,
-    StandardMaterial: Query<Entity, With<Handle<StandardMaterial>>>,
-    mut change: ResMut<Assets<StandardMaterial>>,
-) {
-    
-        for material1 in StandardMaterial.iter() {
-            for asset in change.iter_mut() {
-                asset.1.base_color = Color::RED;
-                println!("Color to red");
-
-            }
+pub fn mob_red1(query: Query<Entity, With<Mob>>, mut material: ResMut<Assets<StandardMaterial>>) {
+    for mob in query.iter() {
+        for asset in material.iter_mut() {
+            let mut mob_asset = asset.1.clone();
+            mob_asset.base_color = Color::RED;
+            println!("Color to red");
         }
     }
+}
 
+#[derive(AsBindGroup, TypeUuid, Debug, Clone)]
+#[uuid = "f690fdae-d598-45ab-8225-97e2a3f056e0"]
+pub struct MobMaterial {
+   
+}
 
+impl<'a> From<&'a StandardMaterial> for MobMaterial {
+    fn from(value: &'a StandardMaterial) -> Self {
+        MobMaterial {
+        }
+      
+}}
+
+#[derive(Component)]
+pub struct CustomizeMaterial;
+
+pub fn customize_scene_materials(
+    mut handles: Query<(Entity, &Handle<StandardMaterial>), With<Mob>>,
+    pbr_materials: Res<Assets<StandardMaterial>>,
+    mut custom_materials: ResMut<Assets<MobMaterial>>,
+    mut cmds: Commands,
+) {
+    for (entity, material_handle) in &mut handles {
+        let Some(material) = pbr_materials.get(material_handle) else { continue; };
+        let custom = custom_materials.add(material.into());
+
+        cmds.entity(entity)
+            .insert(custom)
+            .remove::<Handle<StandardMaterial>>();
+    }
+}
 pub fn attack_sword_v2(
     ball_model: Query<Entity, With<WeaponCollider>>,
     rapier_context: Res<RapierContext>,

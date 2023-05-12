@@ -28,7 +28,7 @@ pub fn aggro_action_system(
     time: Res<Time>,
     mut aggros: Query<&mut Aggro>,
     // We execute actions by querying for their associated Action Component
-    // (Drink in this case). You'll always need both Actor and ActionState.
+    // (Attack in this case). You'll always need both Actor and ActionState.
     mut query: Query<(&Actor, &mut ActionState, &Attack, &ActionSpan)>,
 ) {
     for (Actor(actor), mut state, attack, span) in &mut query {
@@ -185,4 +185,3 @@ pub fn setup(mut commands: Commands, _my_assets: Res<MyAssets>) {
             ));
         });
 }
-

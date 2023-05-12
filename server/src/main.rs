@@ -6,10 +6,19 @@ use bevy_renet::{
 };
 use local_ip_address::local_ip;
 
+use bevy::{
+    app::AppExit,
+    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
+    prelude::*,
+    window::exit_on_all_closed,
+};
+
 pub use bevy::prelude::*;
 pub use bevy_renet::renet::*;
 pub use bevy_renet::*;
 use serde::{Deserialize, Serialize};
+
+use bevy_egui::{EguiContexts, EguiPlugin};
 
 use common::player::things::{
     server_connection_config, ClientChannel, NetworkedEntities, Player, PlayerCommand, PlayerInput,
@@ -31,6 +40,7 @@ fn main() {
         }))
         .insert_resource(create_renet_server())
         .add_plugin(RenetServerPlugin::default())
+        .add_plugin(EguiPlugin)
         .add_system(server_events)
         .add_system(server_update_system)
         .run();
@@ -57,6 +67,7 @@ fn server_update_system(
         match event {
             ServerEvent::ClientConnected(id, _user_data) => {
                 info!("CONNECTED! update_systems{}!", id);
+
                 let message: Vec<u8> =
                     bincode::serialize(&ServerMessages::PlayerJoined { id: *id }).unwrap();
                 server.send_message(*id, ServerChannel::ServerMessages, message);
@@ -78,6 +89,7 @@ fn server_update_system(
         }
     }
 }
+
 fn server_events(mut events: EventReader<ServerEvent>, mut server: ResMut<RenetServer>) {
     for event in events.iter() {
         match event {

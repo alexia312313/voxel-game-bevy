@@ -7,6 +7,7 @@ bevy = "0.10.1"
 bevy_renet = "0.0.7"
 local-ip-address = "0.5.1"
 serde = { version = "1.0", features = ["derive"] }
+renet_visualizer = "0.0.4"
 
 [profile.dev]
 opt-level = 1

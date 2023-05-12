@@ -1,4 +1,7 @@
+use bevy::ecs as bevy_ecs;
+use bevy::ecs::entity::Entity;
 use bevy::prelude::{shape::Icosphere, *};
+use bevy_ecs::prelude::Component;
 use bevy_rapier3d::prelude::*;
 use bevy_renet::renet::{
     ChannelConfig, ReliableChannelConfig, RenetConnectionConfig, UnreliableChannelConfig,

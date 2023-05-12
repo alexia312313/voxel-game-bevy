@@ -10,7 +10,6 @@ bevy.workspace = true
 bevy_renet.workspace = true
 local-ip-address.workspace = true
 serde.workspace = true
-
 bevy_rapier3d = { version = "0.21.0", features = [
     "debug-render",
     "parallel",

@@ -1329,7 +1329,6 @@ dependencies = [
  "bincode",
  "common",
  "local-ip-address",
- "renet_visualizer",
  "serde",
 ]
 
@@ -3424,10 +3423,13 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_ecs",
+ "bevy_egui",
  "bevy_renet",
  "bincode",
  "common",
  "local-ip-address",
+ "renet_visualizer",
  "serde",
 ]
 

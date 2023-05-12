@@ -1,7 +1,9 @@
 use crate::game::connection::components::AllyModel;
+use crate::game::player::resources::Animations;
 use crate::Commands;
 use crate::MyAssets;
 use crate::Transform;
+use bevy::asset::Handle;
 use bevy::math::Quat;
 use bevy::{app::AppExit, prelude::*};
 use bevy_rapier3d::prelude::*;
@@ -58,6 +60,11 @@ pub fn client_sync_players(
                 let messagetosend = format!("Player joined from Cli :D :D :D : {}", id);
                 let (mut player, pos) = playerQuery.get_single_mut().unwrap();
                 println!("Pos: {:?}", pos);
+                let client_anim = commands.insert_resource(Animations(vec![
+                    _my_assets.player_animation_hit.clone_weak(),
+                    _my_assets.player_animation_walking.clone_weak(),
+                    _my_assets.player_animation_idle.clone_weak(),
+                ]));
                 let client_entity = commands
                     .spawn(SceneBundle { ..default() })
                     .insert(RigidBody::Dynamic)

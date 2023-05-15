@@ -9,7 +9,10 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app
             // On Enter State
-            .add_systems((setup, init_system,customize_scene_materials).in_schedule(OnEnter(AppState::Game)))
+            .add_systems((
+                setup, 
+                init_system
+            ).in_schedule(OnEnter(AppState::Game)))
             // Systems
             .add_systems(
                 (

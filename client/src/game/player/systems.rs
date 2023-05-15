@@ -9,10 +9,9 @@ use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
 use crate::MyAssets;
-use bevy::reflect::TypeUuid;
+
 use bevy::render::camera::Projection::Perspective;
-use bevy::render::render_resource::AsBindGroup;
-use bevy::scene::SceneInstance;
+
 use bevy::{input::mouse::MouseMotion, prelude::*, window::CursorGrabMode, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 use std::f32::consts::PI;
@@ -78,37 +77,6 @@ pub fn mob_red1(query: Query<Entity, With<Mob>>, mut material: ResMut<Assets<Sta
     }
 }
 
-#[derive(AsBindGroup, TypeUuid, Debug, Clone)]
-#[uuid = "f690fdae-d598-45ab-8225-97e2a3f056e0"]
-pub struct MobMaterial {
-   
-}
-
-impl<'a> From<&'a StandardMaterial> for MobMaterial {
-    fn from(value: &'a StandardMaterial) -> Self {
-        MobMaterial {
-        }
-      
-}}
-
-#[derive(Component)]
-pub struct CustomizeMaterial;
-
-pub fn customize_scene_materials(
-    mut handles: Query<(Entity, &Handle<StandardMaterial>), With<Mob>>,
-    pbr_materials: Res<Assets<StandardMaterial>>,
-    mut custom_materials: ResMut<Assets<MobMaterial>>,
-    mut cmds: Commands,
-) {
-    for (entity, material_handle) in &mut handles {
-        let Some(material) = pbr_materials.get(material_handle) else { continue; };
-        let custom = custom_materials.add(material.into());
-
-        cmds.entity(entity)
-            .insert(custom)
-            .remove::<Handle<StandardMaterial>>();
-    }
-}
 pub fn attack_sword_v2(
     ball_model: Query<Entity, With<WeaponCollider>>,
     rapier_context: Res<RapierContext>,

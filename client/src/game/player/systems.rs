@@ -8,6 +8,7 @@ use crate::game::resources::Health;
 use crate::game::resources::AnimationEntityLink;
 use crate::CamState;
 
+use crate::game::materials::mob_materials::CustomStandardMaterial;
 use crate::MyAssets;
 
 use bevy::render::camera::Projection::Perspective;
@@ -31,7 +32,7 @@ pub fn attack_sword(
         for mob in mob_query.iter() {
             // checks the collision betwen the weapon and mob exists
             if rapier_context.intersection_pair(weapon, mob) == Some(true) {
-                println!("The colliders {:?} and {:?} are intersecting!", weapon, mob);
+                //  println!("The colliders {:?} and {:?} are intersecting!", weapon, mob);
 
                 // if left button not pressed then mob never taking damage
                 mob_taking_damage = false;
@@ -46,9 +47,7 @@ pub fn attack_sword(
                         if mob_taking_damage == true {
                             //loses 1 on hp and makes the mob go red
                             mob_health.value -= 1;
-                            for asset in standard_material.iter_mut() {
-                                asset.1.base_color = Color::RED;
-                            }
+                            //    for asset in standard_material.iter_mut() {     asset.1.base_color = Color::RED;}
                         }
                     }
                     //if the health is 0 despwans the mob and all its children ( collider etc...)
@@ -57,22 +56,62 @@ pub fn attack_sword(
                     }
                 }
                 //checks if taking damage, if false sets the color back to white which is standard
-                if mob_taking_damage == false {
-                    for asset in standard_material.iter_mut() {
-                        asset.1.base_color = Color::WHITE;
-                    }
-                }
+                //  if mob_taking_damage == false {
+                //     for asset in standard_material.iter_mut() {
+                //      asset.1.base_color = Color::WHITE }}
             }
         }
     }
 }
 
-pub fn mob_red1(query: Query<Entity, With<Mob>>, mut material: ResMut<Assets<StandardMaterial>>) {
-    for mob in query.iter() {
-        for asset in material.iter_mut() {
-            let mut mob_asset = asset.1.clone();
-            mob_asset.base_color = Color::RED;
-            println!("Color to red");
+pub fn mob_red(mut change: ResMut<Assets<StandardMaterial>>) {
+    for asset in change.iter_mut() {
+        asset.1.base_color = Color::RED;
+        println!("Color to red");
+    }
+}
+
+pub fn swap_mob_material(
+    mut commands: Commands,
+    mut material_events: EventReader<AssetEvent<StandardMaterial>>,
+    entites: Query<(Entity, &Handle<StandardMaterial>)>,
+    standard_materials: Res<Assets<StandardMaterial>>,
+    mut custom_materials: ResMut<Assets<CustomStandardMaterial>>,
+) {
+    for event in material_events.iter() {
+        let handle = match event {
+            AssetEvent::Created { handle } => handle,
+            _ => continue,
+        };
+        if let Some(material) = standard_materials.get(handle) {
+            let custom_mat_h = custom_materials.add(CustomStandardMaterial {
+                base_color: Color::BLACK,
+                base_color_texture: material.base_color_texture.clone(),
+                emissive: material.emissive,
+                emissive_texture: material.emissive_texture.clone(),
+                perceptual_roughness: material.perceptual_roughness,
+                metallic: material.metallic,
+                metallic_roughness_texture: material.metallic_roughness_texture.clone(),
+                reflectance: material.reflectance,
+                normal_map_texture: material.normal_map_texture.clone(),
+                flip_normal_map_y: material.flip_normal_map_y,
+                occlusion_texture: material.occlusion_texture.clone(),
+                double_sided: material.double_sided,
+                cull_mode: material.cull_mode,
+                unlit: material.unlit,
+                fog_enabled: material.fog_enabled,
+                alpha_mode: material.alpha_mode,
+                depth_bias: material.depth_bias,
+            });
+            for (entity, entity_mat_h) in entites.iter() {
+                if entity_mat_h == handle {
+                    let mut ecmds = commands.entity(entity);
+                    ecmds.remove::<Handle<StandardMaterial>>();
+                    println!("remove stadanrdMaterial");
+
+                    ecmds.insert(custom_mat_h.clone());
+                }
+            }
         }
     }
 }

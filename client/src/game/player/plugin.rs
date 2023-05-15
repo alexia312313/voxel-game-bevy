@@ -1,8 +1,9 @@
+
 use bevy::prelude::*;
 
 use super::systems::*;
 
-use crate::AppState;
+use crate::{AppState, game::materials::mob_materials::CustomStandardMaterial};
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
@@ -11,8 +12,10 @@ impl Plugin for PlayerPlugin {
             // On Enter State
             .add_systems((
                 setup, 
-                init_system
+                init_system,
             ).in_schedule(OnEnter(AppState::Game)))
+            //Add plugins
+            .add_plugin(MaterialPlugin::<CustomStandardMaterial>::default())
             // Systems
             .add_systems(
                 (
@@ -20,13 +23,10 @@ impl Plugin for PlayerPlugin {
                     change_cam,
                     rotate_camera,
                     equip_weapon,
-                    // check_collider,
-                    // read_result_system,
                     lose_health,
-                    // attack
                     attack_sword,
-                    //attack_sword_v2,
-                    mob_red1
+                    mob_red, 
+                    swap_mob_material
                 )
                     .in_set(OnUpdate(AppState::Game)),
             );

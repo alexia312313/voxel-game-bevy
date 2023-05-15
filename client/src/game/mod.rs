@@ -6,3 +6,4 @@ pub mod resources;
 pub mod systems;
 pub mod ui;
 pub mod world;
+pub mod materials;
